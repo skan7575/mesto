@@ -19,3 +19,13 @@ cursor: pointer;
 .popup__button-save:hover {
   opacity: 0.8;
 }
+
+@media screen and (max-width: 600px) {
+  .popup__button-save{
+  max-width: 238px;
+  font-size: 14px;
+  line-height: 17px;
+  text-align: center;
+
+  }
+}
