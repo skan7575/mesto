@@ -1,0 +1,9 @@
+.gallery__about {
+  margin: 0;
+  padding: 0;
+  width: 246px;
+  max-height: 23px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
