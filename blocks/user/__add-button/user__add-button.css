@@ -15,7 +15,7 @@
 }
 
 .user__add-button:hover {
-  opacity: 0.4;
+  opacity: 0.8;
   transition: 0.4s;
 }
 
@@ -23,5 +23,6 @@
   .user__add-button {
     margin-top: 36px;
     width: 282px;
+    background-size: 16px 16px;
   }
 }
