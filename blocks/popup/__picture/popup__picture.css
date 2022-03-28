@@ -1,4 +1,4 @@
-.popup {
+.popup__picture {
   display: flex;
   visibility: hidden;
   opacity: 0;
@@ -13,7 +13,6 @@
   justify-content: center;
   z-index: 2;
 }
-
 .popup_opened {
   visibility: visible;
   opacity: 1;
