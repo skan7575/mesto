@@ -43,6 +43,7 @@ function formSubmitHandler (evt) {
     profileName.textContent = nameInput.value;
     profileAbout.textContent = jobInput.value;
     close();
+
 }
 formElement.addEventListener('submit', formSubmitHandler);
 
@@ -147,9 +148,9 @@ function addElementToGallery(title, href, last) {
   });
 
   let image = card.querySelector('.gallery__pic');
-  let popupPicture = document.querySelector('.popup__picture');
+  let popupPicture = document.querySelector('#popup__picture');
   let imagePopup = popupPicture.querySelector('img');
-  let popupText = popupPicture.querySelector('.popup__picture-text');
+  let popupText = popupPicture.querySelector('.popup__text_picture');
   image.addEventListener('click', function () {
     popupText.textContent = title;
     imagePopup.src = href;
@@ -168,7 +169,7 @@ function addElementToGallery(title, href, last) {
 initialCards.forEach(function (item) {
   addElementToGallery(item.name, item.link, false);
 })
-let popupPicture = document.querySelector('.popup__picture');
+let popupPicture = document.querySelector('#popup__picture');
 let clouse__button = document.querySelector('#clouse__button')
 clouse__button.addEventListener('click', closePicture);
 function closePicture () {
