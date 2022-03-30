@@ -5,11 +5,11 @@
   display: flex;
   flex-wrap: wrap;
   gap: 17px;
-  justify-content: center;
 }
 
 @media screen and (max-width: 879px) {
   .gallery__items {
     gap: 20px;
+    justify-content: center;
   }
 }

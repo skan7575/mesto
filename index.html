@@ -39,8 +39,8 @@
         <button id="clouse-button" type="button" class="popup__close-button"></button>
         <h3 class="popup__text">Редактировать профиль</h3>
         <form name="profile" class="popup__form">
-          <input name="name" value="Жак-Ив Кусто" type="text" class="popup__input" id="input__name">
-          <input name="about" value="Исследователь океана" type="text" class="popup__input" id="input__about">
+          <input name="name" value="Жак-Ив Кусто" required type="text" class="popup__input" id="input__name">
+          <input name="about" value="Исследователь океана" required type="text" class="popup__input" id="input__about">
           <button type="submit" class="popup__button-save">
             Сохранить
           </button>
@@ -54,8 +54,8 @@
         <button id="clouse-button__edit" type="button" class="popup__close-button"></button>
         <h3 class="popup__text">Новое место</h3>
         <form name="add__card" class="popup__form">
-          <input name="place" placeholder="Название" type="text" class="popup__input" id="input__place">
-          <input name="href" placeholder="Ссылка на картинку" type="text" class="popup__input" id="input__href">
+          <input name="place" placeholder="Название" type="text" required class="popup__input" id="input__place">
+          <input name="href" placeholder="Ссылка на картинку" required type="url" class="popup__input" id="input__href">
           <button type="submit" class="popup__button-save">
             Создать
           </button>
@@ -75,7 +75,7 @@
   </div>
 
   <template id="template__item">
-    <li class="gallery__item">
+    <li class="card-item">
       <img src="https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kamchatka.jpg" alt="" class="gallery__pic">
       <button class="gallery__button-remove"></button>
         <div class="gallery__about">

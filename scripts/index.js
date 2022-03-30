@@ -1,93 +1,32 @@
 //Создание переменных для редактирования профиля
-let btnProfile = document.querySelector('#button__profile');
-let popupOpened = document.querySelector('#edit-profile');
-let popupOpenedAdd = document.querySelector('#edit-popup');
-let btnClose = document.querySelector('#clouse-button');
-let formElement = document.querySelector('.popup__form');
-let nameInput = formElement.querySelector('#input__name');
-let jobInput = formElement.querySelector('#input__about');
+const btnProfile = document.querySelector('#button__profile');
+const popupOpened = document.querySelector('#edit-profile');
+const popupOpenedAdd = document.querySelector('#edit-popup');
+const btnClose = document.querySelector('#clouse-button');
+const formElement = document.querySelector('.popup__form');
+const nameInput = formElement.querySelector('#input__name');
+const jobInput = formElement.querySelector('#input__about');
 
 // Сюда вставляем данные редактирование профиля
-let profileName = document.querySelector('.user__profile-name');
-let profileAbout = document.querySelector('.user__profile-about');
-
-
-//Переменные для закрытия
-
-// Созданы переменные и функции для добавление и удаление псевдокласса класса popup_opened
-btnProfile.addEventListener('click', open);
-function open() {
-  popupOpened.classList.add('popup_opened')
-  nameInput.value = profileName.textContent;
-  jobInput.value  = profileAbout.textContent;
-}
-btnClose.addEventListener('click', close);
-function close() {
-  popupOpened.classList.remove('popup_opened')
-}
-function closeAdd() {
-  popupOpenedAdd.classList.remove('popup_opened');
-}
-
-// Обработчик «отправки» формы, хотя пока
-// она никуда отправляться не будет
-function formSubmitHandler (evt) {
-    evt.preventDefault(); // Эта строчка отменяет стандартную отправку формы.
-                                                // Так мы можем определить свою логику отправки.
-                                                // О том, как это делать, расскажем позже.
-
-
-    // Выберите элементы, куда должны быть вставлены значения полей
-    console.log(profileAbout.textContent);
-    // Вставьте новые значения с помощью textContent
-    profileName.textContent = nameInput.value;
-    profileAbout.textContent = jobInput.value;
-    close();
-
-}
-formElement.addEventListener('submit', formSubmitHandler);
-
-
-//инпуты добавления
-let addCardForm = document.getElementsByName('add__card')[0];
-let titleInput = addCardForm.querySelector('#input__place');
-let hrefInput = addCardForm.querySelector('#input__href');
-// Переменные куда будет выводиться информация
-let cardTitle = document.querySelector('.gallery__title');
-let cardHref = document.querySelector('.gallery__pic');
-
-function addCard (evt) {
-  evt.preventDefault();
-
-  addElementToGallery(titleInput.value, hrefInput.value, false)
-
-  closeAdd();
-}
-
-addCardForm.addEventListener('submit', addCard);
-
-
+const profileName = document.querySelector('.user__profile-name');
+const profileAbout = document.querySelector('.user__profile-about');
 
 //Попап добавления
 
-let popupOpenedEdit = document.querySelector('#edit-popup');
-let btnAdd = document.querySelector('#btnAdd');
-let btnCloseEdit = document.querySelector('#clouse-button__edit')
+const popupOpenedEdit = document.querySelector('#edit-popup');
+const btnAdd = document.querySelector('#btnAdd');
+const btnCloseEdit = document.querySelector('#clouse-button__edit')
 
+//инпуты добавления
+const addCardForm = document.getElementsByName('add__card')[0];
+const titleInput = addCardForm.querySelector('#input__place');
+const hrefInput = addCardForm.querySelector('#input__href');
+// Переменные куда будет выводиться информация
+const cardTitle = document.querySelector('.gallery__title');
+const cardHref = document.querySelector('.gallery__pic');
 
-btnAdd.addEventListener('click', openEdit);
-function openEdit() {
-  popupOpenedEdit.classList.add('popup_opened')
-  nameInput.value = profileName.textContent;
-  jobInput.value = profileAbout.textContent;
-}
-
-btnCloseEdit.addEventListener('click', closeEdit);
-function closeEdit() {
-  popupOpenedEdit.classList.remove('popup_opened')
-}
-
-
+const popupPicture = document.querySelector('#popup__picture');
+const clouse__button = document.querySelector('#clouse__button')
 
 // Галерея
 
@@ -118,6 +57,65 @@ const initialCards = [
   }
 ];
 
+
+function OpenPopup(popupid) {
+  popupid.classList.add('popup_opened');
+}
+function ClousePopup(popupid) {
+  popupid.classList.remove('popup_opened');
+}
+// вызовы откртия попапов
+btnProfile.addEventListener('click', function(){
+  OpenPopup(popupOpened);
+});
+btnAdd.addEventListener('click', function(){
+  OpenPopup(popupOpenedEdit);
+})
+
+// вызовы закрытия попапов
+
+btnCloseEdit.addEventListener('click', function(){
+  ClousePopup(popupOpenedEdit);
+});
+btnClose.addEventListener('click', function(){
+  ClousePopup(popupOpened);
+})
+
+
+
+
+
+// Обработчик «отправки» формы, хотя пока
+// она никуда отправляться не будет
+function handlerSubmitForm (evt) {
+    evt.preventDefault(); // Эта строчка отменяет стандартную отправку формы.
+                                                // Так мы можем определить свою логику отправки.
+                                                // О том, как это делать, расскажем позже.
+
+
+    // Выберите элементы, куда должны быть вставлены значения полей
+    console.log(profileAbout.textContent);
+    // Вставьте новые значения с помощью textContent
+    profileName.textContent = nameInput.value;
+    profileAbout.textContent = jobInput.value;
+    ClousePopup(popupOpened);
+
+}
+formElement.addEventListener('submit', handlerSubmitForm);
+
+
+
+function addCard (evt) {
+  evt.preventDefault();
+
+  addElementToGallery(titleInput.value, hrefInput.value, false)
+
+  ClousePopup(popupOpenedAdd);
+}
+
+addCardForm.addEventListener('submit', addCard);
+
+
 /**
  * Метод добавления элементав галерею
  * @param {String} title заголовок
@@ -131,31 +129,31 @@ function addElementToGallery(title, href, last) {
   const card = document
     .querySelector('#template__item')
     .content
-    .querySelector('.gallery__item')
+    .querySelector('.card-item')
     .cloneNode(true);
   // из темплейта забираю зголовок и картинку, чтобы заменить их свойства
   card.querySelector('.gallery__title').textContent = title;
   card.querySelector('.gallery__pic').src = href;
 
-  let btnLike = card.querySelector('.gallery__like-button');
+  const btnLike = card.querySelector('.gallery__like-button');
   btnLike.addEventListener('click', function () {
     btnLike.classList.toggle('gallery__like-button_active');
   });
 
-  let btnRemove = card.querySelector('.gallery__button-remove');
+  const btnRemove = card.querySelector('.gallery__button-remove');
   btnRemove.addEventListener('click', function(){
     card.remove();
   });
 
-  let image = card.querySelector('.gallery__pic');
-  let popupPicture = document.querySelector('#popup__picture');
-  let imagePopup = popupPicture.querySelector('img');
-  let popupText = popupPicture.querySelector('.popup__text_picture');
+  const image = card.querySelector('.gallery__pic');
+  const popupPicture = document.querySelector('#popup__picture');
+  const imagePopup = popupPicture.querySelector('img');
+  const popupText = popupPicture.querySelector('.popup__text_picture');
   image.addEventListener('click', function () {
     popupText.textContent = title;
     imagePopup.src = href;
     imagePopup.alt = title;
-    popupPicture.classList.add('popup_opened');
+    OpenPopup(popupPicture);
   });
 
 
@@ -169,8 +167,7 @@ function addElementToGallery(title, href, last) {
 initialCards.forEach(function (item) {
   addElementToGallery(item.name, item.link, false);
 })
-let popupPicture = document.querySelector('#popup__picture');
-let clouse__button = document.querySelector('#clouse__button')
+
 clouse__button.addEventListener('click', closePicture);
 function closePicture () {
   popupPicture.classList.remove('popup_opened');
