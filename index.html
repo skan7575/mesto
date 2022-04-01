@@ -39,8 +39,8 @@
         <button id="clouse-button" type="button" class="popup__close-button"></button>
         <h3 class="popup__text">Редактировать профиль</h3>
         <form name="profile" class="popup__form">
-          <input name="name" value="Жак-Ив Кусто" required type="text" class="popup__input" id="input__name">
-          <input name="about" value="Исследователь океана" required type="text" class="popup__input" id="input__about">
+          <input name="name" placeholder="Имя" required type="text" class="popup__input" id="input__name">
+          <input name="about" placeholder="Описание" required type="text" class="popup__input" id="input__about">
           <button type="submit" class="popup__button-save">
             Сохранить
           </button>
@@ -53,7 +53,7 @@
       <div class="popup__container">
         <button id="clouse-button__edit" type="button" class="popup__close-button"></button>
         <h3 class="popup__text">Новое место</h3>
-        <form name="add__card" class="popup__form">
+        <form id="add__card" class="popup__form">
           <input name="place" placeholder="Название" type="text" required class="popup__input" id="input__place">
           <input name="href" placeholder="Ссылка на картинку" required type="url" class="popup__input" id="input__href">
           <button type="submit" class="popup__button-save">
@@ -66,7 +66,7 @@
 
 
   <!-- Попап открытия фото-->
-  <div id="popup__picture" class="popup">
+  <div id="popup__picture" class="popup popup-opacity">
     <div class="popup__container popup__container_photo">
       <button id="clouse__button" class="popup__close-button" type="button"></button>
       <img class="popup__picture-caption" alt="123" src="/">
