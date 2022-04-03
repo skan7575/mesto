@@ -60,8 +60,6 @@ const initialCards = [
 ];
 
 function openPopup(popupElement) {
-  nameInput.value = profileName.textContent;
-  aboutInput.value = profileAbout.textContent;
   popupElement.classList.add("popup_opened");
 }
 function closePopup(popupElement) {
@@ -70,6 +68,8 @@ function closePopup(popupElement) {
 // вызов открытия попапов
 
 btnProfile.addEventListener("click", () => {
+  nameInput.value = profileName.textContent;
+  aboutInput.value = profileAbout.textContent;
   openPopup(popupOpened);
 });
 btnAdd.addEventListener("click", () => {
