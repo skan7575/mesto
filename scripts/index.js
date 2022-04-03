@@ -5,7 +5,7 @@ const popupOpenedAdd = document.querySelector("#edit-popup");
 const btnCloseProfile = document.querySelector("#clouse-button");
 const formElement = document.querySelector(".popup__form");
 const nameInput = formElement.querySelector("#input__name");
-const jobInput = formElement.querySelector("#input__about");
+const aboutInput = formElement.querySelector("#input__about");
 
 // Сюда вставляем данные редактирование профиля
 const profileName = document.querySelector(".user__profile-name");
@@ -18,11 +18,13 @@ const btnAdd = document.querySelector("#btnAdd");
 const btnCloseAdd = document.querySelector("#clouse-button__edit");
 
 //инпуты добавления
-const addCardForm = document.querySelector("#add__card");
-const titleInput = addCardForm.querySelector("#input__place");
-const hrefInput = addCardForm.querySelector("#input__href");
+const cardFormAdd = document.querySelector("#add__card");
+const titleInput = cardFormAdd.querySelector("#input__place");
+const hrefInput = cardFormAdd.querySelector("#input__href");
 
 const popupPicture = document.querySelector("#popup__picture");
+const imagePopup = popupPicture.querySelector("img");
+const popupText = popupPicture.querySelector(".popup__text_picture");
 const btnCloseImage = document.querySelector("#clouse__button");
 
 const gallery = document.querySelector(".gallery__items");
@@ -57,11 +59,13 @@ const initialCards = [
   },
 ];
 
-function openPopup(popupid) {
-  popupid.classList.add("popup_opened");
+function openPopup(popupElement) {
+  nameInput.value = profileName.textContent;
+  aboutInput.value = profileAbout.textContent;
+  popupElement.classList.add("popup_opened");
 }
-function closePopup(popupid) {
-  popupid.classList.remove("popup_opened");
+function closePopup(popupElement) {
+  popupElement.classList.remove("popup_opened");
 }
 // вызов открытия попапов
 
@@ -86,17 +90,17 @@ btnCloseImage.addEventListener("click", () => {
 
 // Обработчик «отправки» формы, хотя пока
 // она никуда отправляться не будет
-function handlerSubmitFormProfile(evt) {
+function handleSubmitFormProfile(evt) {
   evt.preventDefault(); // Эта строчка отменяет стандартную отправку формы.
   // Так мы можем определить свою логику отправки.
   // О том, как это делать, расскажем позже.
 
   // Вставьте новые значения с помощью textContent
   profileName.textContent = nameInput.value;
-  profileAbout.textContent = jobInput.value;
+  profileAbout.textContent = aboutInput.value;
   closePopup(popupOpened);
 }
-formElement.addEventListener("submit", handlerSubmitFormProfile);
+formElement.addEventListener("submit", handleSubmitFormProfile);
 
 function createCard(title, link) {
   const card = templateCard.content.querySelector(".card-item").cloneNode(true);
@@ -104,7 +108,7 @@ function createCard(title, link) {
   const cardImage = card.querySelector("img");
   cardTitle.textContent = title;
   cardImage.src = link;
-  gallery.append(card);
+  cardImage.alt = title;
 
   const btnLike = card.querySelector(".gallery__like-button");
   btnLike.addEventListener("click", () => {
@@ -117,8 +121,6 @@ function createCard(title, link) {
   });
 
   const image = card.querySelector(".gallery__pic");
-  const imagePopup = popupPicture.querySelector("img");
-  const popupText = popupPicture.querySelector(".popup__text_picture");
   image.addEventListener("click", () => {
     popupText.textContent = title;
     imagePopup.src = link;
@@ -144,4 +146,4 @@ function addCard(evt) {
   closePopup(popupOpenedAdd);
 }
 
-addCardForm.addEventListener("submit", addCard);
+cardFormAdd.addEventListener("submit", addCard);
