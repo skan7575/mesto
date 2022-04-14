@@ -1,15 +1,9 @@
-
-/* Проверка на валидность Input */
-
-const checkInputValidity = (input) => {
-  return input.checkValidity();
-}
-
 const validateInput = (input, isValid, selectorPrefix) => {
   const errorElement = input.parentNode.querySelector(`#${input.id}-${selectorPrefix}`);
 
   /* Вывовод сообщение об ошибке  */
   errorElement.textContent = input.validationMessage;
+  input.classList.add('form__input_type_error');
   if (isValid) {
     input.classList.remove('form__input_type_error');
   } else {
@@ -39,7 +33,6 @@ const handleInput = (evt, inactiveButtonClass, submitButtonSelector, selectorPre
   const currentForm = evt.currentTarget;
   const input = evt.target;
   const submitButton = currentForm.querySelector(submitButtonSelector);
-
   const isValid = currentForm.checkValidity();
   validateInput(input, isValid, selectorPrefix);
 
