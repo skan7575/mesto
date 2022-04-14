@@ -6,6 +6,7 @@ const btnCloseProfile = document.querySelector("#clouse-button");
 const formElement = document.querySelector(".popup__form");
 const nameInput = formElement.querySelector("#input__name");
 const aboutInput = formElement.querySelector("#input__about");
+const popups = document.querySelectorAll('.popup');
 
 // Сюда вставляем данные редактирование профиля
 const profileName = document.querySelector(".user__profile-name");
@@ -29,6 +30,8 @@ const btnCloseImage = document.querySelector("#clouse__button");
 
 const gallery = document.querySelector(".gallery__items");
 const templateCard = document.querySelector("#template__item");
+const popupContainer = document.querySelector('.popup__container')
+
 
 // Галерея
 
@@ -65,6 +68,7 @@ function openPopup(popupElement) {
 function closePopup(popupElement) {
   popupElement.classList.remove("popup_opened");
 }
+
 // вызов открытия попапов
 
 btnProfile.addEventListener("click", () => {
@@ -75,6 +79,7 @@ btnProfile.addEventListener("click", () => {
 btnAdd.addEventListener("click", () => {
   openPopup(popupOpenedEdit);
 });
+
 
 // вызовы закрытия попапов
 
@@ -87,6 +92,29 @@ btnCloseProfile.addEventListener("click", () => {
 btnCloseImage.addEventListener("click", () => {
   closePopup(popupPicture);
 });
+
+// закрытие Escape
+
+
+document.addEventListener('keyup', (evt) => {
+  if (evt.key === 'Escape') {
+   const openedPopup = document.querySelector('.popup_opened');
+    closePopup(openedPopup);
+  }
+})
+
+// закрытие кликом по фону
+
+// popup.addEventListener('click', clickClosePopup)
+popups.forEach((item) => {
+  item.addEventListener('mousedown', clickClosePopup)
+})
+
+function clickClosePopup(evt) {
+  if (evt.target.classList.contains('popup_opened')) {
+    closePopup(evt.target);
+  }
+}
 
 // Обработчик «отправки» формы, хотя пока
 // она никуда отправляться не будет

@@ -38,9 +38,15 @@
       <div class="popup__container">
         <button id="clouse-button" type="button" class="popup__close-button"></button>
         <h3 class="popup__text">Редактировать профиль</h3>
-        <form name="profile" class="popup__form">
-          <input name="name" placeholder="Имя" required type="text" class="popup__input" id="input__name">
-          <input name="about" placeholder="Описание" required type="text" class="popup__input" id="input__about">
+        <form name="profile" class="popup__form" novalidate>
+          <label>
+           <input name="name" placeholder="Имя" required type="text" minlength="2" maxlength="40" class="popup__input" id="input__name">
+            <span id="input__name-error" class="error"></span>
+          </label>
+          <label>
+          <input name="about" placeholder="Описание" required minlength="2" maxlength="200" type="text" class="popup__input" id="input__about">
+          <span id="input__about-error" class="error"></span>
+          </label>
           <button type="submit" class="popup__button-save">
             Сохранить
           </button>
@@ -53,9 +59,15 @@
       <div class="popup__container">
         <button id="clouse-button__edit" type="button" class="popup__close-button"></button>
         <h3 class="popup__text">Новое место</h3>
-        <form id="add__card" class="popup__form">
-          <input name="place" placeholder="Название" type="text" required class="popup__input" id="input__place">
-          <input name="href" placeholder="Ссылка на картинку" required type="url" class="popup__input" id="input__href">
+        <form name="place" id="add__card" class="popup__form" novalidate>
+          <label>
+          <input placeholder="Название" type="text" required minlength="2" maxlength="30" class="popup__input" id="input__place">
+          <span id="input__place-error" class="error"></span>
+          </label>
+          <label>
+          <input placeholder="Ссылка на картинку" required type="url" class="popup__input" id="input__href">
+          <span id="input__href-error" class="error"></span>
+          </label>
           <button type="submit" class="popup__button-save">
             Создать
           </button>
@@ -86,5 +98,6 @@
   </template>
 
   <script src="./scripts/index.js"></script>
+  <script src ="./scripts/validate.js"></script>
 </body>
 </html>
