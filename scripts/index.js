@@ -1,11 +1,11 @@
 //Создание переменных для редактирования профиля
 const btnProfile = document.querySelector("#button__profile");
-const popupOpened = document.querySelector("#edit-profile");
-const popupOpenedAdd = document.querySelector("#edit-popup");
+const profilePopup  = document.querySelector("#edit-profile");
+const cardPopup = document.querySelector("#edit-popup");
 const btnCloseProfile = document.querySelector("#clouse-button");
-const formElement = document.querySelector(".popup__form");
-const nameInput = formElement.querySelector("#input__name");
-const aboutInput = formElement.querySelector("#input__about");
+const profileForm = document.querySelector("#profile");
+const nameInputProfileForm = profileForm.querySelector("#input__name");
+const aboutInputProfileForm = profileForm.querySelector("#input__about");
 const popups = document.querySelectorAll('.popup');
 
 // Сюда вставляем данные редактирование профиля
@@ -14,7 +14,6 @@ const profileAbout = document.querySelector(".user__profile-about");
 
 //Попап добавления
 
-const popupOpenedEdit = document.querySelector("#edit-popup");
 const btnAdd = document.querySelector("#btnAdd");
 const btnCloseAdd = document.querySelector("#clouse-button__edit");
 
@@ -30,7 +29,6 @@ const btnCloseImage = document.querySelector("#clouse__button");
 
 const gallery = document.querySelector(".gallery__items");
 const templateCard = document.querySelector("#template__item");
-const popupContainer = document.querySelector('.popup__container')
 
 
 // Галерея
@@ -64,30 +62,33 @@ const initialCards = [
 
 function openPopup(popupElement) {
   popupElement.classList.add("popup_opened");
+  document.addEventListener('keydown', closeByEscape)
 }
+
 function closePopup(popupElement) {
   popupElement.classList.remove("popup_opened");
+  document.removeEventListener('keydown', closeByEscape)
 }
 
 // вызов открытия попапов
 
 btnProfile.addEventListener("click", () => {
-  nameInput.value = profileName.textContent;
-  aboutInput.value = profileAbout.textContent;
-  openPopup(popupOpened);
+  nameInputProfileForm.value = profileName.textContent;
+  aboutInputProfileForm.value = profileAbout.textContent;
+  openPopup(profilePopup );
 });
 btnAdd.addEventListener("click", () => {
-  openPopup(popupOpenedEdit);
+  openPopup(cardPopup);
 });
 
 
 // вызовы закрытия попапов
 
 btnCloseAdd.addEventListener("click", () => {
-  closePopup(popupOpenedEdit);
+  closePopup(cardPopup);
 });
 btnCloseProfile.addEventListener("click", () => {
-  closePopup(popupOpened);
+  closePopup(profilePopup );
 });
 btnCloseImage.addEventListener("click", () => {
   closePopup(popupPicture);
@@ -95,17 +96,26 @@ btnCloseImage.addEventListener("click", () => {
 
 // закрытие Escape
 
-
-document.addEventListener('keyup', (evt) => {
+/*function closeByEscape(evt) {
   if (evt.key === 'Escape') {
-   const openedPopup = document.querySelector('.popup_opened');
-    closePopup(openedPopup);
+    const openedPopup = document.querySelector('.popup_opened') <==нашли открытый попап
+    <== закрыли попап с помощью функции `closePopup` ==
   }
-})
+}*/
+
+
+
+function closeByEscape(evt) {
+  if (evt.key === 'Escape') {
+    const openedPopup = document.querySelector('.popup_opened');
+    if (openedPopup !== null) {
+      closePopup(openedPopup);
+    }
+  }
+}
 
 // закрытие кликом по фону
 
-// popup.addEventListener('click', clickClosePopup)
 popups.forEach((item) => {
   item.addEventListener('mousedown', clickClosePopup)
 })
@@ -124,11 +134,11 @@ function handleSubmitFormProfile(evt) {
   // О том, как это делать, расскажем позже.
 
   // Вставьте новые значения с помощью textContent
-  profileName.textContent = nameInput.value;
-  profileAbout.textContent = aboutInput.value;
-  closePopup(popupOpened);
+  profileName.textContent = nameInputProfileForm.value;
+  profileAbout.textContent = aboutInputProfileForm.value;
+  closePopup(profilePopup );
 }
-formElement.addEventListener("submit", handleSubmitFormProfile);
+profileForm.addEventListener("submit", handleSubmitFormProfile);
 
 function createCard(title, link) {
   const card = templateCard.content.querySelector(".card-item").cloneNode(true);
@@ -171,7 +181,7 @@ function addCard(evt) {
 
   gallery.prepend(card);
 
-  closePopup(popupOpenedAdd);
+  closePopup(cardPopup);
 }
 
 cardFormAdd.addEventListener("submit", addCard);
