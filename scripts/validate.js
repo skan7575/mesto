@@ -1,13 +1,12 @@
-const validateInput = (input, isValid, selectorPrefix) => {
-  const errorElement = input.parentNode.querySelector(`#${input.id}-${selectorPrefix}`);
+const validateInput = (input, isValid,inputErrorClass) => {
 
+  const errorElement = input.parentNode.querySelector('span')
   /* Вывовод сообщение об ошибке  */
   errorElement.textContent = input.validationMessage;
-  input.classList.add('form__input_type_error');
   if (isValid) {
-    input.classList.remove('form__input_type_error');
+    input.classList.remove(inputErrorClass);
   } else {
-    input.classList.add('form__input_type_error');
+    input.classList.add(inputErrorClass);
   }
 }
 
@@ -21,7 +20,7 @@ const disabledButton = (button, inActiveButtonClass) => {
   button.classList.add(inActiveButtonClass);
 }
 
-const isButtonState = (button, isValid, inActiveButtonClass) => {
+const setButtonState = (button, isValid, inActiveButtonClass) => {
   if (isValid) {
     enableButton(button, inActiveButtonClass);
   } else {
@@ -29,14 +28,14 @@ const isButtonState = (button, isValid, inActiveButtonClass) => {
   }
 }
 
-const handleInput = (evt, inactiveButtonClass, submitButtonSelector, selectorPrefix) => {
+const handleInput = (evt, inactiveButtonClass, submitButtonSelector, inputErrorClass) => {
   const currentForm = evt.currentTarget;
   const input = evt.target;
   const submitButton = currentForm.querySelector(submitButtonSelector);
-  const isValid = currentForm.checkValidity();
-  validateInput(input, isValid, selectorPrefix);
 
-  isButtonState(submitButton, isValid, inactiveButtonClass);
+  validateInput(input, input.checkValidity(), inputErrorClass);
+
+  setButtonState(submitButton, currentForm.checkValidity(), inactiveButtonClass);
 }
 
 const handleSubmit = (evt) => {
@@ -53,9 +52,9 @@ function enableValidation(param) {
   document
     .querySelectorAll(param.formSelector)
     .forEach((form) => {
-      form.addEventListener('sumbit', handleSubmit);
+      form.addEventListener('submit', handleSubmit);
       form.addEventListener('input', (evt) => {
-        handleInput(evt, param.inactiveButtonClass, param.submitButtonSelector, 'error')
+        handleInput(evt, param.inactiveButtonClass, param.submitButtonSelector, param.inputErrorClass)
       });
     })
 }

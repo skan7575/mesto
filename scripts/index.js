@@ -12,24 +12,30 @@ const popups = document.querySelectorAll('.popup');
 const profileName = document.querySelector(".user__profile-name");
 const profileAbout = document.querySelector(".user__profile-about");
 
-//Попап добавления
 
-const btnAdd = document.querySelector("#btnAdd");
-const btnCloseAdd = document.querySelector("#clouse-button__edit");
+// кнопка открытия попапа для добавление карточке
+const openCardAddButton = document.querySelector("#btnAdd");
+// крестик редактирования профиля
+const closePupupEditProfileButton = document.querySelector("#clouse-button__edit");
 
 //инпуты добавления
-const cardFormAdd = document.querySelector("#add__card");
-const titleInput = cardFormAdd.querySelector("#input__place");
-const hrefInput = cardFormAdd.querySelector("#input__href");
+
+const addCardForm = document.querySelector("#add__card");
+const titleInput = addCardForm.querySelector("#input__place");
+const hrefInput = addCardForm.querySelector("#input__href");
 
 const popupPicture = document.querySelector("#popup__picture");
-const imagePopup = popupPicture.querySelector("img");
+const imagePopupBigSize = popupPicture.querySelector(".popup__picture-caption");
 const popupText = popupPicture.querySelector(".popup__text_picture");
 const btnCloseImage = document.querySelector("#clouse__button");
 
 const gallery = document.querySelector(".gallery__items");
 const templateCard = document.querySelector("#template__item");
 
+// кнопки форм
+const createButton = addCardForm.querySelector('[type="submit"]')
+// класс выключения кнопки
+const disabledClass = 'popup__button-save_disabled';
 
 // Галерея
 
@@ -77,14 +83,13 @@ btnProfile.addEventListener("click", () => {
   aboutInputProfileForm.value = profileAbout.textContent;
   openPopup(profilePopup );
 });
-btnAdd.addEventListener("click", () => {
+openCardAddButton.addEventListener("click", () => {
   openPopup(cardPopup);
 });
 
 
 // вызовы закрытия попапов
-
-btnCloseAdd.addEventListener("click", () => {
+closePupupEditProfileButton.addEventListener("click", () => {
   closePopup(cardPopup);
 });
 btnCloseProfile.addEventListener("click", () => {
@@ -95,16 +100,6 @@ btnCloseImage.addEventListener("click", () => {
 });
 
 // закрытие Escape
-
-/*function closeByEscape(evt) {
-  if (evt.key === 'Escape') {
-    const openedPopup = document.querySelector('.popup_opened') <==нашли открытый попап
-    <== закрыли попап с помощью функции `closePopup` ==
-  }
-}*/
-
-
-
 function closeByEscape(evt) {
   if (evt.key === 'Escape') {
     const openedPopup = document.querySelector('.popup_opened');
@@ -143,10 +138,10 @@ profileForm.addEventListener("submit", handleSubmitFormProfile);
 function createCard(title, link) {
   const card = templateCard.content.querySelector(".card-item").cloneNode(true);
   const cardTitle = card.querySelector("h2");
-  const cardImage = card.querySelector("img");
+  const cardImagePreview = card.querySelector(".gallery__pic");
   cardTitle.textContent = title;
-  cardImage.src = link;
-  cardImage.alt = title;
+  cardImagePreview.src = link;
+  cardImagePreview.alt = title;
 
   const btnLike = card.querySelector(".gallery__like-button");
   btnLike.addEventListener("click", () => {
@@ -158,11 +153,10 @@ function createCard(title, link) {
     card.remove();
   });
 
-  const image = card.querySelector(".gallery__pic");
-  image.addEventListener("click", () => {
+  cardImagePreview.addEventListener("click", () => {
     popupText.textContent = title;
-    imagePopup.src = link;
-    imagePopup.alt = title;
+    imagePopupBigSize.src = link;
+    imagePopupBigSize.alt = title;
     openPopup(popupPicture);
   });
 
@@ -174,14 +168,24 @@ initialCards.forEach((item) => {
   gallery.append(card);
 });
 
+const disabledButtons = (button, disabledClass) => {
+  button.disabled = true;
+  button.classList.add(disabledClass);
+}
+disabledButtons(createButton, disabledClass);
+
 function addCard(evt) {
   evt.preventDefault();
 
   const card = createCard(titleInput.value, hrefInput.value);
 
   gallery.prepend(card);
+  titleInput.value = '';
+  hrefInput.value = '';
+
+  disabledButtons(createButton, disabledClass);
 
   closePopup(cardPopup);
 }
 
-cardFormAdd.addEventListener("submit", addCard);
+addCardForm.addEventListener("submit", addCard);
