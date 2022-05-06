@@ -1,8 +1,9 @@
 export default class Card {
-  constructor(name, link, selectorElement) {
+  constructor(name, link, selectorElement, onClick) {
     this._name = name;
     this._link = link;
     this._selectorElement = selectorElement;
+    this._onClick = onClick
   }
 
   _getTemplate() {
@@ -32,18 +33,9 @@ export default class Card {
     this._element.remove()
   }
 
-  _openPopup() {
-    this._popupPicture = document.querySelector("#popup__picture");
-    this._popupPicture.classList.add("popup_opened");
-    this._popupPicture.querySelector(".popup__text_picture").textContent = this._name;
-    this._popupPicture.querySelector(".popup__picture-caption").alt = this._name;
-    this._popupPicture.querySelector(".popup__picture-caption").src = this._link;
-
-  }
-
   _setEventListeners() {
     this._picturesImage.addEventListener('click', () => {
-      this._openPopup()
+      this._onClick(this._name, this._link)
     });
     this._btnRemove.addEventListener('click', () => {
       this._deleteElement()

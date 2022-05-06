@@ -62,9 +62,12 @@ const initialCards = [
 const galleryList = document.querySelector('.gallery__items')
 
 initialCards.forEach((item) => {
-  const card = new Card(item.name,
+  const card = new Card(
+    item.name,
     item.link,
-    'template__item')
+    'template__item',
+    openPreviewPopup
+  )
   const cardItem = card._generateCard();
   galleryList.append(cardItem)
 })
@@ -131,12 +134,21 @@ const disabledButtons = (button, disabledClass) => {
 }
 disabledButtons(createButton, disabledClass);
 
+function openPreviewPopup(name, link) {
+  popupPicture.querySelector(".popup__text_picture").textContent = name;
+  popupPicture.querySelector(".popup__picture-caption").alt = name;
+  popupPicture.querySelector(".popup__picture-caption").src = link;
+  openPopup(popupPicture)
+}
+
 function addCard(evt) {
   evt.preventDefault();
   const card = new Card(
     titleInput.value,
     hrefInput.value,
-    'template__item')
+    'template__item',
+    openPreviewPopup
+  )
 
   const cardItem = card._generateCard();
 
