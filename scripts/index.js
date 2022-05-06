@@ -1,5 +1,5 @@
 import Card from './Card.js';
-import FormValidator from "./validate.js";
+import FormValidator from "./FormValidator.js";
 const btnProfile = document.querySelector("#button__profile");
 const profilePopup  = document.querySelector("#edit-profile");
 const cardPopup = document.querySelector("#edit-popup");
@@ -129,11 +129,6 @@ function clickClosePopup(evt) {
   }
 }
 
-const disabledButtons = (button, disabledClass) => {
-  button.disabled = true;
-  button.classList.add(disabledClass);
-}
-disabledButtons(createButton, disabledClass);
 
 function openPreviewPopup(name, link) {
   popupPicture.querySelector(".popup__text_picture").textContent = name;
@@ -155,6 +150,11 @@ function handleSubmitFormProfile(evt) {
 
 profileForm.addEventListener("submit", handleSubmitFormProfile);
 
+
+// disabled buttons
+const ButtonValidator = new FormValidator()
+ButtonValidator.disabledButton(createButton, disabledClass);
+
 function addCard(evt) {
   evt.preventDefault();
   const card = new Card(
@@ -172,7 +172,7 @@ function addCard(evt) {
   titleInput.value = '';
   hrefInput.value = '';
 
-  disabledButtons(createButton, disabledClass);
+  ButtonValidator.disabledButton(createButton, disabledClass);
 
   closePopup(cardPopup);
 }

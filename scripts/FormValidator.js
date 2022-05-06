@@ -20,7 +20,7 @@ export default class FormValidator {
     button.classList.remove(inActiveButtonClass);
   }
 
-  _disabledButton (button, inActiveButtonClass) {
+  disabledButton(button, inActiveButtonClass) {
     button.disabled = true;
     button.classList.add(inActiveButtonClass);
   }
@@ -29,7 +29,7 @@ export default class FormValidator {
     if (isValid) {
       this._enableButton(button, inActiveButtonClass);
     } else {
-      this._disabledButton(button, inActiveButtonClass);
+      this.disabledButton(button, inActiveButtonClass);
     }
   }
 
