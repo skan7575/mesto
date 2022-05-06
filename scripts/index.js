@@ -1,4 +1,5 @@
 import Card from './Card.js';
+import FormValidator from "./validate.js";
 const btnProfile = document.querySelector("#button__profile");
 const profilePopup  = document.querySelector("#edit-profile");
 const cardPopup = document.querySelector("#edit-popup");
@@ -177,4 +178,27 @@ function addCard(evt) {
 }
 addCardForm.addEventListener("submit", addCard);
 
-console.log(galleryList)
+
+const profileFormValidator = new FormValidator(
+  {
+    inputSelector: '.popup__input',
+    submitButtonSelector: '.popup__button-save',
+    inactiveButtonClass: 'popup__button-save_disabled',
+    inputErrorClass: 'form__input_type_error',
+    errorClass: 'error'
+  },
+  profileForm
+)
+profileFormValidator.enableValidation()
+
+const addCardFormValidator = new FormValidator(
+  {
+    inputSelector: '.popup__input',
+    submitButtonSelector: '.popup__button-save',
+    inactiveButtonClass: 'popup__button-save_disabled',
+    inputErrorClass: 'form__input_type_error',
+    errorClass: 'error'
+  },
+  addCardForm
+)
+addCardFormValidator.enableValidation()
