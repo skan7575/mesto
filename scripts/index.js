@@ -141,6 +141,19 @@ function openPreviewPopup(name, link) {
   openPopup(popupPicture)
 }
 
+function handleSubmitFormProfile(evt) {
+  evt.preventDefault(); // Эта строчка отменяет стандартную отправку формы.
+  // Так мы можем определить свою логику отправки.
+  // О том, как это делать, расскажем позже.
+
+  // Вставьте новые значения с помощью textContent
+  profileName.textContent = nameInputProfileForm.value;
+  profileAbout.textContent = aboutInputProfileForm.value;
+  closePopup(profilePopup );
+}
+
+profileForm.addEventListener("submit", handleSubmitFormProfile);
+
 function addCard(evt) {
   evt.preventDefault();
   const card = new Card(
