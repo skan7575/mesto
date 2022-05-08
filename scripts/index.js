@@ -9,6 +9,7 @@ const nameInputProfileForm = profileForm.querySelector("#input__name");
 const aboutInputProfileForm = profileForm.querySelector("#input__about");
 const popups = document.querySelectorAll('.popup');
 
+
 // Сюда вставляем данные редактирование профиля
 const profileName = document.querySelector(".user__profile-name");
 const profileAbout = document.querySelector(".user__profile-about");
@@ -26,6 +27,7 @@ const titleInput = addCardForm.querySelector("#input__place");
 const hrefInput = addCardForm.querySelector("#input__href");
 
 const popupPicture = document.querySelector("#popup__picture");
+const popupCaption = popupPicture.querySelector(".popup__picture-caption");
 const btnCloseImage = document.querySelector("#clouse__button");
 
 
@@ -132,8 +134,8 @@ function clickClosePopup(evt) {
 
 function openPreviewPopup(name, link) {
   popupPicture.querySelector(".popup__text_picture").textContent = name;
-  popupPicture.querySelector(".popup__picture-caption").alt = name;
-  popupPicture.querySelector(".popup__picture-caption").src = link;
+  popupCaption.alt = name;
+  popupCaption.src = link;
   openPopup(popupPicture)
 }
 
