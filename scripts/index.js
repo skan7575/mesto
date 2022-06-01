@@ -152,10 +152,12 @@ function handleSubmitFormProfile(evt) {
 
 profileForm.addEventListener("submit", handleSubmitFormProfile);
 
-
+ // БЫЛО
 // disabled buttons
-const ButtonValidator = new FormValidator()
-ButtonValidator.disabledButton(createButton, disabledClass);
+/*const ButtonValidator = new FormValidator()
+ButtonValidator.disabledButton(createButton, disabledClass);*/
+
+/*addCardFormValidator.disabledButton(createButton, disabledClass);*/
 
 function addCard(evt) {
   evt.preventDefault();
@@ -202,5 +204,7 @@ const addCardFormValidator = new FormValidator(
     errorClass: 'error'
   },
   addCardForm
+
 )
+addCardFormValidator.disabledButton(createButton, disabledClass);
 addCardFormValidator.enableValidation()
