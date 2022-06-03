@@ -65,13 +65,7 @@ const initialCards = [
 const galleryList = document.querySelector('.gallery__items')
 
 initialCards.forEach((item) => {
-  const card = new Card(
-    item.name,
-    item.link,
-    'template__item',
-    openPreviewPopup
-  )
-  const cardItem = card._generateCard();
+  const cardItem = createCard(item.name, item.link)._generateCard();
   galleryList.append(cardItem)
 })
 
@@ -152,23 +146,18 @@ function handleSubmitFormProfile(evt) {
 
 profileForm.addEventListener("submit", handleSubmitFormProfile);
 
- // БЫЛО
-// disabled buttons
-/*const ButtonValidator = new FormValidator()
-ButtonValidator.disabledButton(createButton, disabledClass);*/
-
-/*addCardFormValidator.disabledButton(createButton, disabledClass);*/
-
-function addCard(evt) {
-  evt.preventDefault();
-  const card = new Card(
-    titleInput.value,
-    hrefInput.value,
+function createCard(name, link) {
+  return new Card(
+    name,
+    link,
     'template__item',
     openPreviewPopup
   )
+}
 
-  const cardItem = card._generateCard();
+function addCard(evt) {
+  evt.preventDefault();
+  const cardItem = createCard(titleInput.value, hrefInput.value)._generateCard();
 
 
   galleryList.prepend(cardItem)
@@ -176,35 +165,32 @@ function addCard(evt) {
   titleInput.value = '';
   hrefInput.value = '';
 
-  ButtonValidator.disabledButton(createButton, disabledClass);
+  addCardFormValidator.disabledButton(createButton, disabledClass);
 
   closePopup(cardPopup);
 }
 addCardForm.addEventListener("submit", addCard);
 
 
+const validatorParam = {
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button-save',
+  inactiveButtonClass: 'popup__button-save_disabled',
+  inputErrorClass: 'form__input_type_error',
+  errorClass: 'error'
+};
+
 const profileFormValidator = new FormValidator(
-  {
-    inputSelector: '.popup__input',
-    submitButtonSelector: '.popup__button-save',
-    inactiveButtonClass: 'popup__button-save_disabled',
-    inputErrorClass: 'form__input_type_error',
-    errorClass: 'error'
-  },
+  validatorParam,
   profileForm
 )
+
 profileFormValidator.enableValidation()
 
 const addCardFormValidator = new FormValidator(
-  {
-    inputSelector: '.popup__input',
-    submitButtonSelector: '.popup__button-save',
-    inactiveButtonClass: 'popup__button-save_disabled',
-    inputErrorClass: 'form__input_type_error',
-    errorClass: 'error'
-  },
+  validatorParam,
   addCardForm
-
 )
+
 addCardFormValidator.disabledButton(createButton, disabledClass);
 addCardFormValidator.enableValidation()
