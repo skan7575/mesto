@@ -1,39 +1,30 @@
 import Card from './Card.js';
 import FormValidator from "./FormValidator.js";
+import PopupWithImage from "./PopupWithImage.js";
+import PopupWithForm from "./PopupWithForm.js";
+import UserInfo from "./UserInfo.js";
+
 const btnProfile = document.querySelector("#button__profile");
-const profilePopup  = document.querySelector("#edit-profile");
-const cardPopup = document.querySelector("#edit-popup");
-const btnCloseProfile = document.querySelector("#clouse-button");
 const profileForm = document.querySelector("#profile");
-const nameInputProfileForm = profileForm.querySelector("#input__name");
-const aboutInputProfileForm = profileForm.querySelector("#input__about");
-const popups = document.querySelectorAll('.popup');
+
+const cardPopup = new PopupWithForm("#edit-popup", addCard)
+cardPopup.setEventListeners()
+
+const profilePopup = new PopupWithForm("#edit-profile", handleSubmitFormProfile)
+profilePopup.setEventListeners()
+
+const picturePopup = new PopupWithImage("#popup__picture")
+picturePopup.setEventListeners()
 
 
-// Сюда вставляем данные редактирование профиля
-const profileName = document.querySelector(".user__profile-name");
-const profileAbout = document.querySelector(".user__profile-about");
+const userInfo = new UserInfo({nameSelector: ".user__profile-name", aboutSelector: ".user__profile-about"})
 
-
-// кнопка открытия попапа для добавление карточке
 const openCardAddButton = document.querySelector("#btnAdd");
-// крестик редактирования профиля
-const closePupupEditProfileButton = document.querySelector("#clouse-button__edit");
-
-//инпуты добавления
 
 const addCardForm = document.querySelector("#add__card");
-const titleInput = addCardForm.querySelector("#input__place");
-const hrefInput = addCardForm.querySelector("#input__href");
 
-const popupPicture = document.querySelector("#popup__picture");
-const popupCaption = popupPicture.querySelector(".popup__picture-caption");
-const btnCloseImage = document.querySelector("#clouse__button");
-
-
-// кнопки форм
 const createButton = addCardForm.querySelector('[type="submit"]')
-// класс выключения кнопки
+
 const disabledClass = 'popup__button-save_disabled';
 const initialCards = [
   {
@@ -69,79 +60,27 @@ initialCards.forEach((item) => {
   galleryList.append(cardItem)
 })
 
-
-function openPopup(popupElement) {
-  popupElement.classList.add("popup_opened");
-  document.addEventListener('keydown', closeByEscape)
-}
-
-function closePopup(popupElement) {
-  popupElement.classList.remove("popup_opened");
-  document.removeEventListener('keydown', closeByEscape)
-}
-
 // вызов открытия попапов
 
 btnProfile.addEventListener("click", () => {
-  nameInputProfileForm.value = profileName.textContent;
-  aboutInputProfileForm.value = profileAbout.textContent;
-  openPopup(profilePopup );
+  const user = userInfo.getUserInfo()
+  profilePopup.getForm().querySelector("#input__name").value = user.name
+  profilePopup.getForm().querySelector("#input__about").value = user.about
+
+  profilePopup.open()
 });
+
 openCardAddButton.addEventListener("click", () => {
-  openPopup(cardPopup);
+  cardPopup.open()
 });
-
-
-// вызовы закрытия попапов
-closePupupEditProfileButton.addEventListener("click", () => {
-  closePopup(cardPopup);
-});
-btnCloseProfile.addEventListener("click", () => {
-  closePopup(profilePopup );
-});
-btnCloseImage.addEventListener("click", () => {
-  closePopup(popupPicture);
-});
-
-// закрытие Escape
-function closeByEscape(evt) {
-  if (evt.key === 'Escape') {
-    const openedPopup = document.querySelector('.popup_opened');
-    if (openedPopup !== null) {
-      closePopup(openedPopup);
-    }
-  }
-}
-
-// закрытие кликом по фону
-
-popups.forEach((item) => {
-  item.addEventListener('mousedown', clickClosePopup)
-})
-
-function clickClosePopup(evt) {
-  if (evt.target.classList.contains('popup_opened')) {
-    closePopup(evt.target);
-  }
-}
-
 
 function openPreviewPopup(name, link) {
-  popupPicture.querySelector(".popup__text_picture").textContent = name;
-  popupCaption.alt = name;
-  popupCaption.src = link;
-  openPopup(popupPicture)
+  picturePopup.setData(link, name)
+  picturePopup.open()
 }
 
-function handleSubmitFormProfile(evt) {
-  evt.preventDefault(); // Эта строчка отменяет стандартную отправку формы.
-  // Так мы можем определить свою логику отправки.
-  // О том, как это делать, расскажем позже.
-
-  // Вставьте новые значения с помощью textContent
-  profileName.textContent = nameInputProfileForm.value;
-  profileAbout.textContent = aboutInputProfileForm.value;
-  closePopup(profilePopup );
+function handleSubmitFormProfile(data) {
+  userInfo.setUserInfo(data["input__name"], data["input__about"]);
 }
 
 profileForm.addEventListener("submit", handleSubmitFormProfile);
@@ -155,21 +94,13 @@ function createCard(name, link) {
   )
 }
 
-function addCard(evt) {
-  evt.preventDefault();
-  const cardItem = createCard(titleInput.value, hrefInput.value)._generateCard();
-
+function addCard(data) {
+  const cardItem = createCard(data["input__place"], data["input__href"])._generateCard();
 
   galleryList.prepend(cardItem)
 
-  titleInput.value = '';
-  hrefInput.value = '';
-
   addCardFormValidator.disabledButton(createButton, disabledClass);
-
-  closePopup(cardPopup);
 }
-addCardForm.addEventListener("submit", addCard);
 
 
 const validatorParam = {

@@ -46,9 +46,9 @@ export default class FormValidator {
    _handleSubmit(evt) {
     evt.preventDefault();
 
-    if (this._form.checkValidity()) {
-      this._form.reset();
-    }
+    // if (this._form.checkValidity()) {
+      // this._form.reset();
+    // }
   }
 
   enableValidation() {
