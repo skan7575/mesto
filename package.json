@@ -1,0 +1,19 @@
+{
+  "name": "mesto",
+  "version": "1.0.0",
+  "description": "1. Сверстан макет из Figma.\r 2. Написан JS для редактирования Имени профиля.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/skan7575/mesto.git"
+  },
+  "author": "Негачёв Сергей",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/skan7575/mesto/issues"
+  },
+  "homepage": "https://github.com/skan7575/mesto#readme"
+}
