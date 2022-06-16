@@ -7,7 +7,7 @@
           appearance: none;
   border: none;
   background: none;
-  background-image: url(../../../images/Close\ Icon.svg);
+  background-image: url(../../../images/close_icon.svg);
   background-position: 50% 50%;
   background-repeat: no-repeat;
   transition: 0.4s;
