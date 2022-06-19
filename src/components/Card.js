@@ -7,12 +7,12 @@ export default class Card {
   }
 
   _getTemplate() {
-    const cardTemplate = document.querySelector(`#${this._selectorElement}`);
+    const cardTemplate = document.querySelector(this._selectorElement);
     const cardElement = cardTemplate.content.querySelector(".card-item").cloneNode(true);
     return cardElement;
   }
 
-  _generateCard() {
+  generateCard() {
     this._element = this._getTemplate();
     this._picturesImage = this._element.querySelector('.gallery__pic');
     this._btnRemove = this._element.querySelector(".gallery__button-remove");

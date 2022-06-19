@@ -1,9 +1,10 @@
-import './pages/index.css';
-import Card from './scripts/Card.js';
-import FormValidator from "./scripts/FormValidator.js";
-import PopupWithImage from "./scripts/PopupWithImage.js";
-import PopupWithForm from "./scripts/PopupWithForm.js";
-import UserInfo from "./scripts/UserInfo.js";
+import './index.css';
+import Card from '../components/Card.js';
+import FormValidator from "../components/FormValidator.js";
+import PopupWithImage from "../components/PopupWithImage.js";
+import PopupWithForm from "../components/PopupWithForm.js";
+import UserInfo from "../components/UserInfo.js";
+import Section from "../components/Section";
 
 const btnProfile = document.querySelector("#button__profile");
 const profileForm = document.querySelector("#profile");
@@ -14,19 +15,22 @@ cardPopup.setEventListeners()
 const profilePopup = new PopupWithForm("#edit-profile", handleSubmitFormProfile)
 profilePopup.setEventListeners()
 
+const nameInputProfilePopup =  profilePopup.getForm().querySelector("#input__name");
+const aboutInputProfilePopup = profilePopup.getForm().querySelector("#input__about");
+
 const picturePopup = new PopupWithImage("#popup__picture")
 picturePopup.setEventListeners()
 
 
+
 const userInfo = new UserInfo({nameSelector: ".user__profile-name", aboutSelector: ".user__profile-about"})
 
-const openCardAddButton = document.querySelector("#btnAdd");
+const buttonAddPlace = document.querySelector("#btnAdd");
 
-const addCardForm = document.querySelector("#add__card");
+const formAddCard = document.querySelector("#add__card");
 
-const createButton = addCardForm.querySelector('[type="submit"]')
+const buttonCreateCard = formAddCard.querySelector('[type="submit"]')
 
-const disabledClass = 'popup__button-save_disabled';
 const initialCards = [
   {
     name: "Архыз",
@@ -54,24 +58,30 @@ const initialCards = [
   },
 ];
 
-const galleryList = document.querySelector('.gallery__items')
+// const galleryList = document.querySelector('.gallery__items')
 
-initialCards.forEach((item) => {
-  const cardItem = createCard(item.name, item.link)._generateCard();
-  galleryList.append(cardItem)
-})
+// initialCards.forEach((item) => {
+//   const cardItem = createCard(item.name, item.link)._generateCard();
+//   galleryList.append(cardItem)
+// })
 
+const cardsSection = new Section(
+  { items: initialCards, renderer: item => createCard(item.name, item.link)},
+  '.gallery__items'
+)
+
+cardsSection.renderer()
 // вызов открытия попапов
 
 btnProfile.addEventListener("click", () => {
   const user = userInfo.getUserInfo()
-  profilePopup.getForm().querySelector("#input__name").value = user.name
-  profilePopup.getForm().querySelector("#input__about").value = user.about
+  nameInputProfilePopup.value = user.name
+  aboutInputProfilePopup.value = user.about
 
   profilePopup.open()
 });
 
-openCardAddButton.addEventListener("click", () => {
+buttonAddPlace.addEventListener("click", () => {
   cardPopup.open()
 });
 
@@ -84,23 +94,22 @@ function handleSubmitFormProfile(data) {
   userInfo.setUserInfo(data["input__name"], data["input__about"]);
 }
 
-profileForm.addEventListener("submit", handleSubmitFormProfile);
 
 function createCard(name, link) {
   return new Card(
     name,
     link,
-    'template__item',
+    '#template__item',
     openPreviewPopup
   )
+    .generateCard()
 }
 
 function addCard(data) {
-  const cardItem = createCard(data["input__place"], data["input__href"])._generateCard();
+  const cardItem = createCard(data["input__place"], data["input__href"]);
+  cardsSection.addItem(cardItem)
 
-  galleryList.prepend(cardItem)
-
-  addCardFormValidator.disabledButton(createButton, disabledClass);
+  addCardFormValidator.disabledButton(buttonCreateCard);
 }
 
 
@@ -121,8 +130,8 @@ profileFormValidator.enableValidation()
 
 const addCardFormValidator = new FormValidator(
   validatorParam,
-  addCardForm
+  formAddCard
 )
 
-addCardFormValidator.disabledButton(createButton, disabledClass);
+addCardFormValidator.disabledButton(buttonCreateCard);
 addCardFormValidator.enableValidation()

@@ -59,14 +59,16 @@
         <button id="clouse-button__edit" type="button" class="popup__close-button"></button>
         <h3 class="popup__text">Новое место</h3>
         <form name="place" id="add__card" class="popup__form" novalidate>
-          <label>
-          <input placeholder="Название" type="text" required minlength="2" maxlength="30" class="popup__input" id="input__place">
-          <span id="input__place-error" class="error"></span>
-          </label>
-          <label>
-          <input placeholder="Ссылка на картинку" required type="url" class="popup__input" id="input__href">
-          <span id="input__href-error" class="error"></span>
-          </label>
+          <div class="popup__inputs">
+            <label class="popup__label">
+              <input placeholder="Название" type="text" required minlength="2" maxlength="30" class="popup__input" id="input__place">
+              <span id="input__place-error" class="error"></span>
+            </label>
+            <label class="popup__label">
+              <input placeholder="Ссылка на картинку" required type="url" class="popup__input" id="input__href">
+              <span id="input__href-error" class="error"></span>
+            </label>
+          </div>
           <button type="submit" class="popup__button-save">
             Создать
           </button>
