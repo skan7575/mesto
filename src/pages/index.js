@@ -29,7 +29,8 @@ const buttonAddPlace = document.querySelector("#btnAdd");
 
 const formAddCard = document.querySelector("#add__card");
 
-const buttonCreateCard = formAddCard.querySelector('[type="submit"]')
+
+
 
 const initialCards = [
   {
@@ -58,19 +59,15 @@ const initialCards = [
   },
 ];
 
-// const galleryList = document.querySelector('.gallery__items')
-
-// initialCards.forEach((item) => {
-//   const cardItem = createCard(item.name, item.link)._generateCard();
-//   galleryList.append(cardItem)
-// })
-
 const cardsSection = new Section(
-  { items: initialCards, renderer: item => createCard(item.name, item.link)},
+  { items: initialCards, renderer: function (item) {
+      cardsSection.addItem(createCard(item.name, item.link))
+    }},
   '.gallery__items'
 )
 
 cardsSection.renderer()
+
 // вызов открытия попапов
 
 btnProfile.addEventListener("click", () => {
@@ -81,9 +78,7 @@ btnProfile.addEventListener("click", () => {
   profilePopup.open()
 });
 
-buttonAddPlace.addEventListener("click", () => {
-  cardPopup.open()
-});
+
 
 function openPreviewPopup(name, link) {
   picturePopup.setData(link, name)
@@ -103,13 +98,13 @@ function createCard(name, link) {
     openPreviewPopup
   )
     .generateCard()
+
 }
 
 function addCard(data) {
   const cardItem = createCard(data["input__place"], data["input__href"]);
   cardsSection.addItem(cardItem)
 
-  addCardFormValidator.disabledButton(buttonCreateCard);
 }
 
 
@@ -133,5 +128,10 @@ const addCardFormValidator = new FormValidator(
   formAddCard
 )
 
-addCardFormValidator.disabledButton(buttonCreateCard);
+buttonAddPlace.addEventListener("click", () => {
+  cardPopup.open()
+  addCardFormValidator.disabledButton();
+});
+
+
 addCardFormValidator.enableValidation()
