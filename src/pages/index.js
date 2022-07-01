@@ -26,7 +26,7 @@ const userInfo = new UserInfo({nameSelector: ".user__profile-name", aboutSelecto
 
 const cardsSection = new Section(
   { items: [], renderer: function (item) {
-      cardsSection.addItem(createCard(item.name, item.link))
+      // cardsSection.addItem(createCard(item.name, item.link))
     }},
   '.gallery__items'
 )
@@ -50,21 +50,39 @@ function openPreviewPopup(name, link) {
   picturePopup.open()
 }
 
-function handleSubmitFormProfile(data) {
-  api.editProfile(data["input__name"], data["input__about"])
-    .then(res => {
-      userInfo.setUserInfo(data["input__name"], data["input__about"]);
-    })
+function openCardDeleteConfirmPopup(card, cardId) {
+  const cardDeletePopup = new PopupWithForm("#popup-delete", () => {
+    handleSubmitFormDeleteCard(card, cardId)
+  })
+  cardDeletePopup.setEventListeners()
+  cardDeletePopup.open()
 }
 
 
-function createCard(name, link, likes) {
+function onLikeClick(card, cardId, like) {
+  if (like) {
+   api.setLike(cardId).then(res => {
+     card.setLike(res.likes, true)
+   })
+  } else {
+    api.deleteLike(cardId).then(res => {
+      card.setLike(res.likes, false)
+    })
+  }
+}
+
+function createCard(cardId, name, link, likes, canDelete, isLiked) {
   return new Card(
+    cardId,
     name,
     link,
     likes,
+    isLiked,
     '#template__item',
-    openPreviewPopup
+    openPreviewPopup,
+    openCardDeleteConfirmPopup,
+    canDelete,
+    onLikeClick
   )
     .generateCard()
 
@@ -73,7 +91,7 @@ function createCard(name, link, likes) {
 function addCard(data) {
   api.addCard(data["input__place"], data["input__href"])
     .then(res => {
-      const cardItem = createCard(data["input__place"], data["input__href"], data.likes);
+      const cardItem = createCard(res._id, res.name, res.link, res.likes, true);
       cardsSection.addItem(cardItem)
     })
 }
@@ -111,11 +129,33 @@ addCardFormValidator.enableValidation()
 api.getProfile()
   .then(res => {
     userInfo.setUserInfo(res.name, res.about)
+
+    api.getInitialCards()
+      .then(cardList => {
+        cardList.forEach(data => {
+          const cardItem = createCard(
+            data._id,
+            data.name,
+            data.link,
+            data.likes,
+            data.owner._id === res._id,
+            data.likes.find(item => item._id === res._id),
+            );
+          cardsSection.addItem(cardItem)
+        })
+      })
   })
-api.getInitialCards()
-  .then(cardList => {
-    cardList.forEach(data => {
-      const cardItem = createCard(data.name, data.link, data.likes);
-      cardsSection.addItem(cardItem)
+
+function handleSubmitFormProfile(data) {
+  api.editProfile(data["input__name"], data["input__about"])
+    .then(res => {
+      userInfo.setUserInfo(data["input__name"], data["input__about"]);
     })
-  })
+}
+
+function handleSubmitFormDeleteCard(card, cardId) {
+  api.deleteCard(cardId)
+    .then(res => {
+      card.deleteElement()
+    })
+}

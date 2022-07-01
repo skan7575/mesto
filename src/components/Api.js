@@ -54,6 +54,37 @@ class Api {
       .catch(console.log)
   }
 
+  deleteCard(cardId) {
+    return fetch(`${this.bdlink}cards/${cardId}`, {
+      method: 'DELETE',
+      headers: {
+        authorization: `${secretToken}`
+      }
+    })
+      .then(this._getResponseData)
+      .catch(console.log)
+  }
+  setLike(cardId) {
+    return fetch(`${this.bdlink}cards/${cardId}/likes`,{
+      method: 'PUT',
+      headers: {
+        authorization: `${secretToken}`
+      }
+    })
+      .then(this._getResponseData)
+      .catch(console.log)
+  }
+  deleteLike(cardId) {
+    return fetch(`${this.bdlink}cards/${cardId}/likes`,{
+      method: 'DELETE',
+      headers: {
+        authorization: `${secretToken}`
+      }
+    })
+      .then(this._getResponseData)
+      .catch(console.log)
+  }
+
   getAvatar(avatar) {
     return fetch(`${this.bdlink}users/me/avatar`, {
         method: 'PATCH',
@@ -72,6 +103,7 @@ class Api {
     }
     return Promise.reject(`Ошибка: ${res.status}`);
   }
+
 }
 
 export const api = new Api ({

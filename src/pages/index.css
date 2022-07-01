@@ -24,6 +24,7 @@
 @import url(../blocks/gallery/__title/gallery__title.css);
 @import url(../blocks/gallery/__lite-items/galley__like-items.css);
 @import url(../blocks/gallery/__like-counter/gallery__like-counter.css);
+@import url(../blocks/gallery/__button-remove/_disabled/gallery__button-remove_disabled.css);
 @import url(../blocks/footer/footer.css);
 @import url(../blocks/footer/__copyright/footer__copyright.css);
 @import url(../blocks/gallery/__like-button/_active/gallery__like-button_active.css);
