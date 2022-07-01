@@ -1,9 +1,10 @@
 export default class Card {
-  constructor(name, link, selectorElement, onClick) {
+  constructor(name, link, likes, selectorElement, onClick) {
     this._name = name;
     this._link = link;
     this._selectorElement = selectorElement;
-    this._onClick = onClick
+    this._onClick = onClick;
+    this._likes = likes
   }
 
   _getTemplate() {
@@ -11,7 +12,10 @@ export default class Card {
     const cardElement = cardTemplate.content.querySelector(".card-item").cloneNode(true);
     return cardElement;
   }
-
+  _setLikes() {
+   const likeCounter = this._element.querySelector('.gallery__like-counter')
+    likeCounter.textContent = this._likes.length
+  }
   generateCard() {
     this._element = this._getTemplate();
     this._picturesImage = this._element.querySelector('.gallery__pic');
@@ -21,6 +25,7 @@ export default class Card {
     this._element.querySelector('.gallery__title').textContent = this._name;
     this._picturesImage.src = this._link;
     this._picturesImage.alt = this._name;
+    this._setLikes()
     this._setEventListeners()
     return this._element;
   }

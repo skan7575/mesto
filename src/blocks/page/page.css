@@ -11,3 +11,6 @@
   -moz-text-size-adjust: 100%;
   position: relative;
 }
+button, input, optgroup, select, textarea {
+  font-family: 'Inter', sans-serif;
+}

@@ -14,10 +14,13 @@
     <main class="main">
       <section class="user">
         <div class="user__profile">
-          <img src="<%=require('./images/image.jpg')%>" alt="Фотография профиля" class="user__picture">
+          <div class="user__picture-edit">
+            <img src="<%=require('./images/image.jpg')%>" alt="Фотография профиля" class="user__picture">
+            <button id="button-edit-image" class="user__picture-button"></button>
+          </div>
           <div class="user__profile-text">
-            <h1 class="user__profile-name">Жак-Ив Кусто</h1>
-            <p class="user__profile-about">Исследователь океана</p>
+            <h1 class="user__profile-name"></h1>
+            <p class="user__profile-about"></p>
             <button id="button__profile" type="button" title="Редактировать профиль" class="user__profile-button"></button>
           </div>
         </div>
@@ -77,6 +80,26 @@
     </div>
   </div>
 
+  <!-- Попап редактирования автара профиля-->
+  <div id="edit-profile-avatar" class="popup">
+    <div class="popup__container">
+      <button id="clouse-button__edit-avatar" type="button" class="popup__close-button"></button>
+      <h3 class="popup__text">Обновить аватар</h3>
+      <form name="place" id="edit__avatar-form" class="popup__form" novalidate>
+        <div class="popup__inputs">
+          <label class="popup__label">
+            <input placeholder="Ссылка на картинку" required type="url" class="popup__input" id="input__href-avatar">
+            <span id="input__href-error-avatar" class="error"></span>
+          </label>
+        </div>
+        <button type="submit" class="popup__button-save">
+          Сохранить
+        </button>
+      </form>
+    </div>
+  </div>
+  </div>
+
 
   <!-- Попап открытия фото-->
   <div id="popup__picture" class="popup popup-opacity">
@@ -87,13 +110,32 @@
     </div>
   </div>
 
+
+  <!-- Попап удаления карточки-->
+  <div id="popup-delete" class="popup">
+    <div class="popup__container">
+      <button id="clouse-button-delete" type="button" class="popup__close-button"></button>
+      <h3 class="popup__text popup__text_delete">Вы уверены?</h3>
+      <form name="deleteCard" id="popup-delete-form" class="popup__form" novalidate>
+        <button type="submit" class="popup__button-save">
+          Да
+        </button>
+      </form>
+
+    </div>
+  </div>
+
+
   <template id="template__item">
     <li class="card-item">
       <img src="https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kamchatka.jpg" alt="" class="gallery__pic">
       <button class="gallery__button-remove"></button>
         <div class="gallery__about">
           <h2 class="gallery__title">Архыз</h2>
-          <button type="button" title="поставить лайк" class="gallery__like-button"></button>
+          <div class="galley__like-items">
+            <button type="button" title="поставить лайк" class="gallery__like-button"></button>
+            <span class="gallery__like-counter"></span>
+          </div>
         </div>
     </li>
   </template>

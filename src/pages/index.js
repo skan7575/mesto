@@ -4,10 +4,11 @@ import FormValidator from "../components/FormValidator.js";
 import PopupWithImage from "../components/PopupWithImage.js";
 import PopupWithForm from "../components/PopupWithForm.js";
 import UserInfo from "../components/UserInfo.js";
-import Section from "../components/Section";
+import Section from "../components/Section.js";
+import {baseLink, secretToken, btnProfile, profileForm, buttonAddPlace, formAddCard, initialCards} from "../components/virables.js"
+import { api } from "../components/Api.js";
 
-const btnProfile = document.querySelector("#button__profile");
-const profileForm = document.querySelector("#profile");
+
 
 const cardPopup = new PopupWithForm("#edit-popup", addCard)
 cardPopup.setEventListeners()
@@ -21,46 +22,10 @@ const aboutInputProfilePopup = profilePopup.getForm().querySelector("#input__abo
 const picturePopup = new PopupWithImage("#popup__picture")
 picturePopup.setEventListeners()
 
-
-
 const userInfo = new UserInfo({nameSelector: ".user__profile-name", aboutSelector: ".user__profile-about"})
 
-const buttonAddPlace = document.querySelector("#btnAdd");
-
-const formAddCard = document.querySelector("#add__card");
-
-
-
-
-const initialCards = [
-  {
-    name: "Архыз",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg",
-  },
-  {
-    name: "Челябинская область",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/chelyabinsk-oblast.jpg",
-  },
-  {
-    name: "Иваново",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/ivanovo.jpg",
-  },
-  {
-    name: "Камчатка",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kamchatka.jpg",
-  },
-  {
-    name: "Холмогорский район",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kholmogorsky-rayon.jpg",
-  },
-  {
-    name: "Байкал",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg",
-  },
-];
-
 const cardsSection = new Section(
-  { items: initialCards, renderer: function (item) {
+  { items: [], renderer: function (item) {
       cardsSection.addItem(createCard(item.name, item.link))
     }},
   '.gallery__items'
@@ -86,14 +51,18 @@ function openPreviewPopup(name, link) {
 }
 
 function handleSubmitFormProfile(data) {
-  userInfo.setUserInfo(data["input__name"], data["input__about"]);
+  api.editProfile(data["input__name"], data["input__about"])
+    .then(res => {
+      userInfo.setUserInfo(data["input__name"], data["input__about"]);
+    })
 }
 
 
-function createCard(name, link) {
+function createCard(name, link, likes) {
   return new Card(
     name,
     link,
+    likes,
     '#template__item',
     openPreviewPopup
   )
@@ -102,9 +71,11 @@ function createCard(name, link) {
 }
 
 function addCard(data) {
-  const cardItem = createCard(data["input__place"], data["input__href"]);
-  cardsSection.addItem(cardItem)
-
+  api.addCard(data["input__place"], data["input__href"])
+    .then(res => {
+      const cardItem = createCard(data["input__place"], data["input__href"], data.likes);
+      cardsSection.addItem(cardItem)
+    })
 }
 
 
@@ -135,3 +106,16 @@ buttonAddPlace.addEventListener("click", () => {
 
 
 addCardFormValidator.enableValidation()
+
+
+api.getProfile()
+  .then(res => {
+    userInfo.setUserInfo(res.name, res.about)
+  })
+api.getInitialCards()
+  .then(cardList => {
+    cardList.forEach(data => {
+      const cardItem = createCard(data.name, data.link, data.likes);
+      cardsSection.addItem(cardItem)
+    })
+  })
