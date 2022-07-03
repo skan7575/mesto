@@ -10,6 +10,7 @@
   background-position: 50% 50%;
   background-repeat: no-repeat;
   transition: 0.4s;
+  background-color: inherit;
 
 }
 
