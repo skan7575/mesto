@@ -10,13 +10,19 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
 var Card = /*#__PURE__*/function () {
-  function Card(name, link, selectorElement, onClick) {
+  function Card(cardId, name, link, likes, isLikeActive, selectorElement, onClick, onDeleteClick, canDelete, onLikeClick) {
     _classCallCheck(this, Card);
 
+    this._cardId = cardId;
     this._name = name;
     this._link = link;
     this._selectorElement = selectorElement;
     this._onClick = onClick;
+    this._likes = likes;
+    this._isLikeActive = isLikeActive;
+    this._onDeleteClick = onDeleteClick;
+    this._canDelete = canDelete;
+    this._onLikeClick = onLikeClick;
   }
 
   _createClass(Card, [{
@@ -36,19 +42,42 @@ var Card = /*#__PURE__*/function () {
       this._element.querySelector('.gallery__title').textContent = this._name;
       this._picturesImage.src = this._link;
       this._picturesImage.alt = this._name;
+      this.setLike(this._likes, this._isLikeActive);
 
       this._setEventListeners();
+
+      if (this._canDelete) {
+        this._btnRemove.classList.remove('gallery__button-remove_disabled');
+      } else {
+        this._btnRemove.classList.add('gallery__button-remove_disabled');
+      }
 
       return this._element;
     }
   }, {
-    key: "_handleLike",
-    value: function _handleLike() {
-      this._btnLike.classList.toggle("gallery__like-button_active");
+    key: "setLike",
+    value: function setLike(likes, isLikeActive) {
+      this._likes = likes;
+
+      var likeCounter = this._element.querySelector('.gallery__like-counter');
+
+      if (this._likes) {
+        likeCounter.textContent = this._likes.length;
+      } else {
+        likeCounter.textContent = "0";
+      }
+
+      this._isLikeActive = isLikeActive;
+
+      if (isLikeActive) {
+        this._btnLike.classList.add("gallery__like-button_active");
+      } else {
+        this._btnLike.classList.remove("gallery__like-button_active");
+      }
     }
   }, {
-    key: "_deleteElement",
-    value: function _deleteElement() {
+    key: "deleteElement",
+    value: function deleteElement() {
       this._element.remove();
 
       this._element = null;
@@ -63,11 +92,11 @@ var Card = /*#__PURE__*/function () {
       });
 
       this._btnRemove.addEventListener('click', function () {
-        _this._deleteElement();
+        _this._onDeleteClick(_this, _this._cardId);
       });
 
       this._btnLike.addEventListener('click', function () {
-        _this._handleLike();
+        _this._onLikeClick(_this, _this._cardId, !_this._isLikeActive);
       });
     }
   }]);
@@ -330,7 +359,9 @@ var PopupWithForm = /*#__PURE__*/function (_Popup) {
     PopupWithForm_classCallCheck(this, PopupWithForm);
 
     _this = _super.call(this, popupSelector);
-    _this._form = _this._popup.querySelector(".popup__form");
+    _this._form = _this._popup.querySelector(".popup__form"); // this._button = this._form.find(':submit')
+
+    _this._button = _this._form.querySelector('button[type="submit"]');
     _this._submitCallback = submitCallback;
     _this._inputs = Array.from(_this._form.querySelectorAll('.popup__input'));
     return _this;
@@ -340,6 +371,13 @@ var PopupWithForm = /*#__PURE__*/function (_Popup) {
     key: "getForm",
     value: function getForm() {
       return this._form;
+    }
+  }, {
+    key: "open",
+    value: function open() {
+      this._button.textContent = "сохранить";
+
+      PopupWithForm_get(PopupWithForm_getPrototypeOf(PopupWithForm.prototype), "open", this).call(this);
     }
   }, {
     key: "close",
@@ -368,10 +406,10 @@ var PopupWithForm = /*#__PURE__*/function (_Popup) {
 
       this._popup.addEventListener("submit", function (evt) {
         evt.preventDefault();
+        _this2._button.textContent = "сохранение ...";
 
-        _this2._submitCallback(_this2._getInputValues());
+        _this2._submitCallback(_this2._getInputValues(), _this2); // this.close()
 
-        _this2.close();
       });
     }
   }]);
@@ -390,12 +428,14 @@ function UserInfo_createClass(Constructor, protoProps, staticProps) { if (protoP
 var UserInfo = /*#__PURE__*/function () {
   function UserInfo(_ref) {
     var nameSelector = _ref.nameSelector,
-        aboutSelector = _ref.aboutSelector;
+        aboutSelector = _ref.aboutSelector,
+        avatarSelector = _ref.avatarSelector;
 
     UserInfo_classCallCheck(this, UserInfo);
 
     this._name = document.querySelector(nameSelector);
     this._about = document.querySelector(aboutSelector);
+    this._avatar = document.querySelector(avatarSelector);
   }
 
   UserInfo_createClass(UserInfo, [{
@@ -408,9 +448,10 @@ var UserInfo = /*#__PURE__*/function () {
     }
   }, {
     key: "setUserInfo",
-    value: function setUserInfo(name, about) {
+    value: function setUserInfo(name, about, avatar) {
       this._name.textContent = name;
       this._about.textContent = about;
+      this._avatar.src = avatar;
     }
   }]);
 
@@ -457,6 +498,148 @@ var Section = /*#__PURE__*/function () {
 }();
 
 
+;// CONCATENATED MODULE: ./src/components/virables.js
+var baseLink = "https://nomoreparties.co/v1/cohort-44/";
+var secretToken = "018813d9-9fe2-45e7-bf4b-f013d9732180";
+var btnProfile = document.querySelector("#button__profile");
+var profileForm = document.querySelector("#profile");
+var buttonAddPlace = document.querySelector("#btnAdd");
+var formAddCard = document.querySelector("#add__card");
+var buttonEditAvatar = document.querySelector("#button-edit-image");
+var formEditAvatar = document.querySelector("#edit__avatar-form");
+;// CONCATENATED MODULE: ./src/components/Api.js
+function Api_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function Api_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function Api_createClass(Constructor, protoProps, staticProps) { if (protoProps) Api_defineProperties(Constructor.prototype, protoProps); if (staticProps) Api_defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+
+
+var Api = /*#__PURE__*/function () {
+  function Api(_ref) {
+    var baseUrl = _ref.baseUrl,
+        headers = _ref.headers;
+
+    Api_classCallCheck(this, Api);
+
+    this.bdlink = baseUrl;
+    this.headers = headers;
+  }
+
+  Api_createClass(Api, [{
+    key: "getProfile",
+    value: function getProfile() {
+      return fetch("".concat(this.bdlink, "users/me"), {
+        headers: {
+          authorization: "".concat(secretToken)
+        }
+      }).then(this._getResponseData).catch(console.log);
+    }
+  }, {
+    key: "editProfile",
+    value: function editProfile(name, about) {
+      return fetch("".concat(baseLink, "users/me"), {
+        method: 'PATCH',
+        headers: {
+          authorization: "".concat(secretToken),
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: name,
+          about: about
+        })
+      }).then(this._getResponseData).catch(console.log);
+    }
+  }, {
+    key: "editAvatar",
+    value: function editAvatar(avatar) {
+      return fetch("".concat(baseLink, "users/me/avatar"), {
+        method: 'PATCH',
+        headers: {
+          authorization: "".concat(secretToken),
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          avatar: avatar
+        })
+      }).then(this._getResponseData).catch(console.log);
+    }
+  }, {
+    key: "addCard",
+    value: function addCard(name, link) {
+      return fetch("".concat(this.bdlink, "cards"), {
+        method: 'POST',
+        headers: {
+          authorization: "".concat(secretToken),
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: name,
+          link: link
+        })
+      }).then(this._getResponseData).catch(console.log);
+    }
+  }, {
+    key: "getInitialCards",
+    value: function getInitialCards() {
+      return fetch("".concat(this.bdlink, "cards"), {
+        headers: {
+          authorization: "".concat(secretToken)
+        }
+      }).then(this._getResponseData).catch(console.log);
+    }
+  }, {
+    key: "deleteCard",
+    value: function deleteCard(cardId) {
+      return fetch("".concat(this.bdlink, "cards/").concat(cardId), {
+        method: 'DELETE',
+        headers: {
+          authorization: "".concat(secretToken)
+        }
+      }).then(this._getResponseData).catch(console.log);
+    }
+  }, {
+    key: "setLike",
+    value: function setLike(cardId) {
+      return fetch("".concat(this.bdlink, "cards/").concat(cardId, "/likes"), {
+        method: 'PUT',
+        headers: {
+          authorization: "".concat(secretToken)
+        }
+      }).then(this._getResponseData).catch(console.log);
+    }
+  }, {
+    key: "deleteLike",
+    value: function deleteLike(cardId) {
+      return fetch("".concat(this.bdlink, "cards/").concat(cardId, "/likes"), {
+        method: 'DELETE',
+        headers: {
+          authorization: "".concat(secretToken)
+        }
+      }).then(this._getResponseData).catch(console.log);
+    }
+  }, {
+    key: "_getResponseData",
+    value: function _getResponseData(res) {
+      if (res.ok) {
+        return res.json();
+      }
+
+      return Promise.reject("\u041E\u0448\u0438\u0431\u043A\u0430: ".concat(res.status));
+    }
+  }]);
+
+  return Api;
+}();
+
+var api = new Api({
+  baseUrl: baseLink,
+  headers: {
+    authorization: secretToken,
+    'Content-Type': 'application/json'
+  }
+});
 ;// CONCATENATED MODULE: ./src/pages/index.js
 
 
@@ -465,49 +648,33 @@ var Section = /*#__PURE__*/function () {
 
 
 
-var btnProfile = document.querySelector("#button__profile");
-var profileForm = document.querySelector("#profile");
+
+
 var cardPopup = new PopupWithForm("#edit-popup", addCard);
 cardPopup.setEventListeners();
 var profilePopup = new PopupWithForm("#edit-profile", handleSubmitFormProfile);
 profilePopup.setEventListeners();
+var AvatarEditPopup = new PopupWithForm("#edit-profile-avatar", handleSubmitFormAvatar);
+AvatarEditPopup.setEventListeners();
 var nameInputProfilePopup = profilePopup.getForm().querySelector("#input__name");
 var aboutInputProfilePopup = profilePopup.getForm().querySelector("#input__about");
 var picturePopup = new PopupWithImage("#popup__picture");
 picturePopup.setEventListeners();
 var userInfo = new UserInfo({
   nameSelector: ".user__profile-name",
-  aboutSelector: ".user__profile-about"
+  aboutSelector: ".user__profile-about",
+  avatarSelector: ".user__picture"
 });
-var buttonAddPlace = document.querySelector("#btnAdd");
-var formAddCard = document.querySelector("#add__card");
-var initialCards = [{
-  name: "Архыз",
-  link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg"
-}, {
-  name: "Челябинская область",
-  link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/chelyabinsk-oblast.jpg"
-}, {
-  name: "Иваново",
-  link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/ivanovo.jpg"
-}, {
-  name: "Камчатка",
-  link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kamchatka.jpg"
-}, {
-  name: "Холмогорский район",
-  link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kholmogorsky-rayon.jpg"
-}, {
-  name: "Байкал",
-  link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg"
-}];
 var cardsSection = new Section({
-  items: initialCards,
-  renderer: function renderer(item) {
-    cardsSection.addItem(createCard(item.name, item.link));
-  }
+  items: [],
+  renderer: function renderer(item) {}
 }, '.gallery__items');
 cardsSection.renderer(); // вызов открытия попапов
 
+buttonEditAvatar.addEventListener("click", function () {
+  AvatarEditPopup.open();
+  avatarFormValidator.disabledButton();
+});
 btnProfile.addEventListener("click", function () {
   var user = userInfo.getUserInfo();
   nameInputProfilePopup.value = user.name;
@@ -520,17 +687,28 @@ function openPreviewPopup(name, link) {
   picturePopup.open();
 }
 
-function handleSubmitFormProfile(data) {
-  userInfo.setUserInfo(data["input__name"], data["input__about"]);
+function openCardDeleteConfirmPopup(card, cardId) {
+  var cardDeletePopup = new PopupWithForm("#popup-delete", function () {
+    handleSubmitFormDeleteCard(card, cardId);
+  });
+  cardDeletePopup.setEventListeners();
+  cardDeletePopup.open();
 }
 
-function createCard(name, link) {
-  return new Card(name, link, '#template__item', openPreviewPopup).generateCard();
+function onLikeClick(card, cardId, like) {
+  if (like) {
+    api.setLike(cardId).then(function (res) {
+      card.setLike(res.likes, true);
+    });
+  } else {
+    api.deleteLike(cardId).then(function (res) {
+      card.setLike(res.likes, false);
+    });
+  }
 }
 
-function addCard(data) {
-  var cardItem = createCard(data["input__place"], data["input__href"]);
-  cardsSection.addItem(cardItem);
+function createCard(cardId, name, link, likes, canDelete, isLiked) {
+  return new Card(cardId, name, link, likes, isLiked, '#template__item', openPreviewPopup, openCardDeleteConfirmPopup, canDelete, onLikeClick).generateCard();
 }
 
 var validatorParam = {
@@ -542,11 +720,52 @@ var validatorParam = {
 };
 var profileFormValidator = new FormValidator(validatorParam, profileForm);
 profileFormValidator.enableValidation();
+var avatarFormValidator = new FormValidator(validatorParam, formEditAvatar);
+avatarFormValidator.enableValidation();
 var addCardFormValidator = new FormValidator(validatorParam, formAddCard);
+addCardFormValidator.enableValidation();
 buttonAddPlace.addEventListener("click", function () {
   cardPopup.open();
   addCardFormValidator.disabledButton();
 });
-addCardFormValidator.enableValidation();
+api.getProfile().then(function (res) {
+  userInfo.setUserInfo(res.name, res.about, res.avatar);
+  api.getInitialCards().then(function (cardList) {
+    cardList.forEach(function (data) {
+      var cardItem = createCard(data._id, data.name, data.link, data.likes, data.owner._id === res._id, data.likes.find(function (item) {
+        return item._id === res._id;
+      }));
+      cardsSection.addItem(cardItem);
+    });
+  });
+});
+
+function handleSubmitFormProfile(data, popup) {
+  api.editProfile(data["input__name"], data["input__about"]).then(function (res) {
+    userInfo.setUserInfo(res.name, res.about, res.avatar);
+    popup.close();
+  });
+}
+
+function handleSubmitFormAvatar(data, popup) {
+  api.editAvatar(data['input__href_avatar']).then(function (res) {
+    userInfo.setUserInfo(res.name, res.about, res.avatar);
+    popup.close();
+  });
+}
+
+function addCard(data, popup) {
+  api.addCard(data["input__place"], data["input__href"]).then(function (res) {
+    var cardItem = createCard(res._id, res.name, res.link, res.likes, true);
+    cardsSection.addItem(cardItem);
+    popup.close();
+  });
+}
+
+function handleSubmitFormDeleteCard(card, cardId) {
+  api.deleteCard(cardId).then(function (res) {
+    card.deleteElement();
+  });
+}
 /******/ })()
 ;
