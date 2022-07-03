@@ -15,8 +15,8 @@
       <section class="user">
         <div class="user__profile">
           <div class="user__picture-edit">
-            <img src="<%=require('./images/image.jpg')%>" alt="Фотография профиля" class="user__picture">
-            <button id="button-edit-image" class="user__picture-button"></button>
+            <img src="<%=require('./images/user.png')%>" alt="Фотография профиля" class="user__picture">
+            <button title="Редактировать изображение" id="button-edit-image" class="user__picture-button"></button>
           </div>
           <div class="user__profile-text">
             <h1 class="user__profile-name"></h1>
@@ -85,11 +85,11 @@
     <div class="popup__container">
       <button id="clouse-button__edit-avatar" type="button" class="popup__close-button"></button>
       <h3 class="popup__text">Обновить аватар</h3>
-      <form name="place" id="edit__avatar-form" class="popup__form" novalidate>
+      <form id="edit__avatar-form" class="popup__form" novalidate>
         <div class="popup__inputs">
           <label class="popup__label">
-            <input placeholder="Ссылка на картинку" required type="url" class="popup__input" id="input__href-avatar">
-            <span id="input__href-error-avatar" class="error"></span>
+            <input placeholder="Ссылка на картинку" required type="url" class="popup__input" id="input__href_avatar">
+            <span id="input__href_avatar-error" class="error"></span>
           </label>
         </div>
         <button type="submit" class="popup__button-save">

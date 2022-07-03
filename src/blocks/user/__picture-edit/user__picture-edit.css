@@ -1,8 +1,4 @@
 .user__picture-edit {
   position: relative;
   display: block;
-
-}
-.user__picture-edit:hover {
-  opacity: 0.2;
 }

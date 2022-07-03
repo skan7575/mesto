@@ -5,7 +5,7 @@ import PopupWithImage from "../components/PopupWithImage.js";
 import PopupWithForm from "../components/PopupWithForm.js";
 import UserInfo from "../components/UserInfo.js";
 import Section from "../components/Section.js";
-import {baseLink, secretToken, btnProfile, profileForm, buttonAddPlace, formAddCard, initialCards} from "../components/virables.js"
+import {btnProfile, profileForm, buttonAddPlace, formAddCard, buttonEditAvatar, formEditAvatar} from "../components/virables.js"
 import { api } from "../components/Api.js";
 
 
@@ -16,17 +16,19 @@ cardPopup.setEventListeners()
 const profilePopup = new PopupWithForm("#edit-profile", handleSubmitFormProfile)
 profilePopup.setEventListeners()
 
+const AvatarEditPopup = new PopupWithForm("#edit-profile-avatar", handleSubmitFormAvatar)
+AvatarEditPopup.setEventListeners()
+
 const nameInputProfilePopup =  profilePopup.getForm().querySelector("#input__name");
 const aboutInputProfilePopup = profilePopup.getForm().querySelector("#input__about");
 
 const picturePopup = new PopupWithImage("#popup__picture")
 picturePopup.setEventListeners()
 
-const userInfo = new UserInfo({nameSelector: ".user__profile-name", aboutSelector: ".user__profile-about"})
+const userInfo = new UserInfo({nameSelector: ".user__profile-name", aboutSelector: ".user__profile-about", avatarSelector: ".user__picture"})
 
 const cardsSection = new Section(
   { items: [], renderer: function (item) {
-      // cardsSection.addItem(createCard(item.name, item.link))
     }},
   '.gallery__items'
 )
@@ -35,6 +37,11 @@ cardsSection.renderer()
 
 // вызов открытия попапов
 
+buttonEditAvatar.addEventListener("click", () => {
+  AvatarEditPopup.open()
+  avatarFormValidator.disabledButton();
+});
+
 btnProfile.addEventListener("click", () => {
   const user = userInfo.getUserInfo()
   nameInputProfilePopup.value = user.name
@@ -42,8 +49,6 @@ btnProfile.addEventListener("click", () => {
 
   profilePopup.open()
 });
-
-
 
 function openPreviewPopup(name, link) {
   picturePopup.setData(link, name)
@@ -88,14 +93,6 @@ function createCard(cardId, name, link, likes, canDelete, isLiked) {
 
 }
 
-function addCard(data) {
-  api.addCard(data["input__place"], data["input__href"])
-    .then(res => {
-      const cardItem = createCard(res._id, res.name, res.link, res.likes, true);
-      cardsSection.addItem(cardItem)
-    })
-}
-
 
 const validatorParam = {
   inputSelector: '.popup__input',
@@ -112,23 +109,26 @@ const profileFormValidator = new FormValidator(
 
 profileFormValidator.enableValidation()
 
+const avatarFormValidator = new FormValidator(
+  validatorParam,
+  formEditAvatar
+)
+avatarFormValidator.enableValidation()
+
 const addCardFormValidator = new FormValidator(
   validatorParam,
   formAddCard
 )
+addCardFormValidator.enableValidation()
 
 buttonAddPlace.addEventListener("click", () => {
   cardPopup.open()
   addCardFormValidator.disabledButton();
 });
 
-
-addCardFormValidator.enableValidation()
-
-
 api.getProfile()
   .then(res => {
-    userInfo.setUserInfo(res.name, res.about)
+    userInfo.setUserInfo(res.name, res.about, res.avatar)
 
     api.getInitialCards()
       .then(cardList => {
@@ -146,10 +146,28 @@ api.getProfile()
       })
   })
 
-function handleSubmitFormProfile(data) {
+function handleSubmitFormProfile(data, popup) {
   api.editProfile(data["input__name"], data["input__about"])
     .then(res => {
-      userInfo.setUserInfo(data["input__name"], data["input__about"]);
+      userInfo.setUserInfo(res.name, res.about, res.avatar)
+      popup.close()
+    })
+}
+
+function handleSubmitFormAvatar(data, popup) {
+  api.editAvatar(data['input__href_avatar'])
+    .then(res => {
+      userInfo.setUserInfo(res.name, res.about, res.avatar)
+      popup.close()
+    })
+}
+
+function addCard(data, popup) {
+  api.addCard(data["input__place"], data["input__href"])
+    .then(res => {
+      const cardItem = createCard(res._id, res.name, res.link, res.likes, true);
+      cardsSection.addItem(cardItem)
+      popup.close()
     })
 }
 

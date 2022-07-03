@@ -29,6 +29,20 @@ class Api {
       .then(this._getResponseData)
       .catch(console.log)
   }
+  editAvatar(avatar) {
+    return fetch(`${baseLink}users/me/avatar`, {
+      method: 'PATCH',
+      headers: {
+        authorization: `${secretToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        avatar,
+      })
+    })
+      .then(this._getResponseData)
+      .catch(console.log)
+  }
   addCard(name, link) {
     return fetch(`${this.bdlink}cards`,{
       method: 'POST',
@@ -80,18 +94,6 @@ class Api {
       headers: {
         authorization: `${secretToken}`
       }
-    })
-      .then(this._getResponseData)
-      .catch(console.log)
-  }
-
-  getAvatar(avatar) {
-    return fetch(`${this.bdlink}users/me/avatar`, {
-        method: 'PATCH',
-      headers: {
-        authorization: `${secretToken}`
-      },
-        body: JSON.stringify(avatar)
     })
       .then(this._getResponseData)
       .catch(console.log)
