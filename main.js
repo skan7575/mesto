@@ -368,6 +368,11 @@ var PopupWithForm = /*#__PURE__*/function (_Popup) {
   }
 
   PopupWithForm_createClass(PopupWithForm, [{
+    key: "setSubmitCallback",
+    value: function setSubmitCallback(submitCallback) {
+      this._submitCallback = submitCallback;
+    }
+  }, {
     key: "getForm",
     value: function getForm() {
       return this._form;
@@ -442,13 +447,15 @@ var UserInfo = /*#__PURE__*/function () {
     key: "getUserInfo",
     value: function getUserInfo() {
       return {
+        id: this._id,
         name: this._name.textContent,
         about: this._about.textContent
       };
     }
   }, {
     key: "setUserInfo",
-    value: function setUserInfo(name, about, avatar) {
+    value: function setUserInfo(id, name, about, avatar) {
+      this._id = id;
       this._name.textContent = name;
       this._about.textContent = about;
       this._avatar.src = avatar;
@@ -468,22 +475,20 @@ function Section_createClass(Constructor, protoProps, staticProps) { if (protoPr
 
 var Section = /*#__PURE__*/function () {
   function Section(_ref, containerSelector) {
-    var items = _ref.items,
-        renderer = _ref.renderer;
+    var renderer = _ref.renderer;
 
     Section_classCallCheck(this, Section);
 
-    this._items = items;
     this._renderer = renderer;
     this._containerSelector = document.querySelector(containerSelector);
   }
 
   Section_createClass(Section, [{
     key: "renderer",
-    value: function renderer() {
+    value: function renderer(items) {
       var _this = this;
 
-      this._items.forEach(function (item) {
+      items.forEach(function (item) {
         _this._renderer(item);
       });
     }
@@ -507,6 +512,13 @@ var buttonAddPlace = document.querySelector("#btnAdd");
 var formAddCard = document.querySelector("#add__card");
 var buttonEditAvatar = document.querySelector("#button-edit-image");
 var formEditAvatar = document.querySelector("#edit__avatar-form");
+var validatorParam = {
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button-save',
+  inactiveButtonClass: 'popup__button-save_disabled',
+  inputErrorClass: 'form__input_type_error',
+  errorClass: 'error'
+};
 ;// CONCATENATED MODULE: ./src/components/Api.js
 function Api_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -534,7 +546,7 @@ var Api = /*#__PURE__*/function () {
         headers: {
           authorization: "".concat(secretToken)
         }
-      }).then(this._getResponseData).catch(console.log);
+      }).then(this._getResponseData);
     }
   }, {
     key: "editProfile",
@@ -549,7 +561,7 @@ var Api = /*#__PURE__*/function () {
           name: name,
           about: about
         })
-      }).then(this._getResponseData).catch(console.log);
+      }).then(this._getResponseData);
     }
   }, {
     key: "editAvatar",
@@ -563,7 +575,7 @@ var Api = /*#__PURE__*/function () {
         body: JSON.stringify({
           avatar: avatar
         })
-      }).then(this._getResponseData).catch(console.log);
+      }).then(this._getResponseData);
     }
   }, {
     key: "addCard",
@@ -578,7 +590,7 @@ var Api = /*#__PURE__*/function () {
           name: name,
           link: link
         })
-      }).then(this._getResponseData).catch(console.log);
+      }).then(this._getResponseData);
     }
   }, {
     key: "getInitialCards",
@@ -587,7 +599,7 @@ var Api = /*#__PURE__*/function () {
         headers: {
           authorization: "".concat(secretToken)
         }
-      }).then(this._getResponseData).catch(console.log);
+      }).then(this._getResponseData);
     }
   }, {
     key: "deleteCard",
@@ -597,7 +609,7 @@ var Api = /*#__PURE__*/function () {
         headers: {
           authorization: "".concat(secretToken)
         }
-      }).then(this._getResponseData).catch(console.log);
+      }).then(this._getResponseData);
     }
   }, {
     key: "setLike",
@@ -607,7 +619,7 @@ var Api = /*#__PURE__*/function () {
         headers: {
           authorization: "".concat(secretToken)
         }
-      }).then(this._getResponseData).catch(console.log);
+      }).then(this._getResponseData);
     }
   }, {
     key: "deleteLike",
@@ -617,7 +629,7 @@ var Api = /*#__PURE__*/function () {
         headers: {
           authorization: "".concat(secretToken)
         }
-      }).then(this._getResponseData).catch(console.log);
+      }).then(this._getResponseData);
     }
   }, {
     key: "_getResponseData",
@@ -654,25 +666,30 @@ var cardPopup = new PopupWithForm("#edit-popup", addCard);
 cardPopup.setEventListeners();
 var profilePopup = new PopupWithForm("#edit-profile", handleSubmitFormProfile);
 profilePopup.setEventListeners();
-var AvatarEditPopup = new PopupWithForm("#edit-profile-avatar", handleSubmitFormAvatar);
-AvatarEditPopup.setEventListeners();
+var avatarEditPopup = new PopupWithForm("#edit-profile-avatar", handleSubmitFormAvatar);
+avatarEditPopup.setEventListeners();
 var nameInputProfilePopup = profilePopup.getForm().querySelector("#input__name");
 var aboutInputProfilePopup = profilePopup.getForm().querySelector("#input__about");
 var picturePopup = new PopupWithImage("#popup__picture");
 picturePopup.setEventListeners();
+var cardDeletePopup = new PopupWithForm("#popup-delete");
+cardDeletePopup.setEventListeners();
 var userInfo = new UserInfo({
   nameSelector: ".user__profile-name",
   aboutSelector: ".user__profile-about",
   avatarSelector: ".user__picture"
 });
 var cardsSection = new Section({
-  items: [],
-  renderer: function renderer(item) {}
-}, '.gallery__items');
-cardsSection.renderer(); // вызов открытия попапов
+  renderer: function renderer(data) {
+    var userId = userInfo.getUserInfo().id;
+    cardsSection.addItem(createCard(data._id, data.name, data.link, data.likes, data.owner._id === userId, data.likes.find(function (item) {
+      return item._id === userId;
+    })));
+  }
+}, '.gallery__items'); // вызов открытия попапов
 
 buttonEditAvatar.addEventListener("click", function () {
-  AvatarEditPopup.open();
+  avatarEditPopup.open();
   avatarFormValidator.disabledButton();
 });
 btnProfile.addEventListener("click", function () {
@@ -688,10 +705,9 @@ function openPreviewPopup(name, link) {
 }
 
 function openCardDeleteConfirmPopup(card, cardId) {
-  var cardDeletePopup = new PopupWithForm("#popup-delete", function () {
-    handleSubmitFormDeleteCard(card, cardId);
+  cardDeletePopup.setSubmitCallback(function (_, popup) {
+    handleSubmitFormDeleteCard(card, cardId, popup);
   });
-  cardDeletePopup.setEventListeners();
   cardDeletePopup.open();
 }
 
@@ -699,11 +715,11 @@ function onLikeClick(card, cardId, like) {
   if (like) {
     api.setLike(cardId).then(function (res) {
       card.setLike(res.likes, true);
-    });
+    }).catch(console.log);
   } else {
     api.deleteLike(cardId).then(function (res) {
       card.setLike(res.likes, false);
-    });
+    }).catch(console.log);
   }
 }
 
@@ -711,13 +727,6 @@ function createCard(cardId, name, link, likes, canDelete, isLiked) {
   return new Card(cardId, name, link, likes, isLiked, '#template__item', openPreviewPopup, openCardDeleteConfirmPopup, canDelete, onLikeClick).generateCard();
 }
 
-var validatorParam = {
-  inputSelector: '.popup__input',
-  submitButtonSelector: '.popup__button-save',
-  inactiveButtonClass: 'popup__button-save_disabled',
-  inputErrorClass: 'form__input_type_error',
-  errorClass: 'error'
-};
 var profileFormValidator = new FormValidator(validatorParam, profileForm);
 profileFormValidator.enableValidation();
 var avatarFormValidator = new FormValidator(validatorParam, formEditAvatar);
@@ -728,28 +737,25 @@ buttonAddPlace.addEventListener("click", function () {
   cardPopup.open();
   addCardFormValidator.disabledButton();
 });
-api.getProfile().then(function (res) {
-  userInfo.setUserInfo(res.name, res.about, res.avatar);
-  api.getInitialCards().then(function (cardList) {
-    cardList.forEach(function (data) {
-      var cardItem = createCard(data._id, data.name, data.link, data.likes, data.owner._id === res._id, data.likes.find(function (item) {
-        return item._id === res._id;
-      }));
-      cardsSection.addItem(cardItem);
-    });
-  });
-});
+Promise.all([api.getProfile(), api.getInitialCards()]).then(function (values) {
+  var res = values[0];
+  var cardList = values[1];
+  userInfo.setUserInfo(res._id, res.name, res.about, res.avatar);
+  cardsSection.renderer(cardList);
+}).catch(console.log);
 
 function handleSubmitFormProfile(data, popup) {
   api.editProfile(data["input__name"], data["input__about"]).then(function (res) {
-    userInfo.setUserInfo(res.name, res.about, res.avatar);
+    userInfo.setUserInfo(res._id, res.name, res.about, res.avatar);
+  }).catch(console.log).finally(function () {
     popup.close();
   });
 }
 
 function handleSubmitFormAvatar(data, popup) {
   api.editAvatar(data['input__href_avatar']).then(function (res) {
-    userInfo.setUserInfo(res.name, res.about, res.avatar);
+    userInfo.setUserInfo(res._id, res.name, res.about, res.avatar);
+  }).catch(console.log).finally(function () {
     popup.close();
   });
 }
@@ -758,13 +764,16 @@ function addCard(data, popup) {
   api.addCard(data["input__place"], data["input__href"]).then(function (res) {
     var cardItem = createCard(res._id, res.name, res.link, res.likes, true);
     cardsSection.addItem(cardItem);
+  }).catch(console.log).finally(function () {
     popup.close();
   });
 }
 
-function handleSubmitFormDeleteCard(card, cardId) {
+function handleSubmitFormDeleteCard(card, cardId, popup) {
   api.deleteCard(cardId).then(function (res) {
     card.deleteElement();
+  }).catch(console.log).finally(function () {
+    popup.close();
   });
 }
 /******/ })()
