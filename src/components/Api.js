@@ -5,17 +5,18 @@ class Api {
     this.bdlink = baseUrl
     this.headers = headers
   }
+
   getProfile() {
-    return fetch(`${this.bdlink}users/me`,{
+    return fetch(`${this.bdlink}users/me`, {
       headers: {
         authorization: `${secretToken}`
       }
     })
       .then(this._getResponseData)
-      .catch(console.log)
   }
+
   editProfile(name, about) {
-    return fetch(`${baseLink}users/me`,{
+    return fetch(`${baseLink}users/me`, {
       method: 'PATCH',
       headers: {
         authorization: `${secretToken}`,
@@ -27,8 +28,8 @@ class Api {
       })
     })
       .then(this._getResponseData)
-      .catch(console.log)
   }
+
   editAvatar(avatar) {
     return fetch(`${baseLink}users/me/avatar`, {
       method: 'PATCH',
@@ -41,10 +42,10 @@ class Api {
       })
     })
       .then(this._getResponseData)
-      .catch(console.log)
   }
+
   addCard(name, link) {
-    return fetch(`${this.bdlink}cards`,{
+    return fetch(`${this.bdlink}cards`, {
       method: 'POST',
       headers: {
         authorization: `${secretToken}`,
@@ -56,8 +57,8 @@ class Api {
       })
     })
       .then(this._getResponseData)
-      .catch(console.log)
   }
+
   getInitialCards() {
     return fetch(`${this.bdlink}cards`, {
       headers: {
@@ -65,7 +66,6 @@ class Api {
       }
     })
       .then(this._getResponseData)
-      .catch(console.log)
   }
 
   deleteCard(cardId) {
@@ -76,27 +76,26 @@ class Api {
       }
     })
       .then(this._getResponseData)
-      .catch(console.log)
   }
+
   setLike(cardId) {
-    return fetch(`${this.bdlink}cards/${cardId}/likes`,{
+    return fetch(`${this.bdlink}cards/${cardId}/likes`, {
       method: 'PUT',
       headers: {
         authorization: `${secretToken}`
       }
     })
       .then(this._getResponseData)
-      .catch(console.log)
   }
+
   deleteLike(cardId) {
-    return fetch(`${this.bdlink}cards/${cardId}/likes`,{
+    return fetch(`${this.bdlink}cards/${cardId}/likes`, {
       method: 'DELETE',
       headers: {
         authorization: `${secretToken}`
       }
     })
       .then(this._getResponseData)
-      .catch(console.log)
   }
 
   _getResponseData(res) {
@@ -108,7 +107,7 @@ class Api {
 
 }
 
-export const api = new Api ({
+export const api = new Api({
   baseUrl: baseLink,
   headers: {
     authorization: secretToken,

@@ -11,6 +11,10 @@ export default class PopupWithForm extends Popup {
     this._inputs = Array.from(this._form.querySelectorAll('.popup__input'))
   }
 
+  setSubmitCallback(submitCallback) {
+    this._submitCallback = submitCallback
+  }
+
   getForm() {
     return this._form
   }
@@ -26,8 +30,8 @@ export default class PopupWithForm extends Popup {
   }
 
   _getInputValues() {
-    let values = {}
-   this._inputs
+    const values = {}
+    this._inputs
       .forEach(item => {
         values[item.id] = item.value
       })

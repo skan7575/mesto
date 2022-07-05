@@ -6,3 +6,10 @@ export const buttonAddPlace = document.querySelector("#btnAdd");
 export const formAddCard = document.querySelector("#add__card");
 export const buttonEditAvatar = document.querySelector("#button-edit-image")
 export const formEditAvatar = document.querySelector("#edit__avatar-form")
+export const validatorParam = {
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button-save',
+  inactiveButtonClass: 'popup__button-save_disabled',
+  inputErrorClass: 'form__input_type_error',
+  errorClass: 'error'
+};
