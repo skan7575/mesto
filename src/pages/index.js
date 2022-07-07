@@ -161,11 +161,10 @@ function handleSubmitFormProfile(data, popup) {
     .then(res => {
       userInfo.setUserInfo(res._id, res.name, res.about, res.avatar)
     })
-    .catch(console.log)
-    .finally(() => {
+    .then(res => {
       popup.close()
     })
-
+    .catch(console.log)
 }
 
 function handleSubmitFormAvatar(data, popup) {
@@ -173,10 +172,10 @@ function handleSubmitFormAvatar(data, popup) {
     .then(res => {
       userInfo.setUserInfo(res._id, res.name, res.about, res.avatar)
     })
-    .catch(console.log)
-    .finally(() => {
+    .then(res => {
       popup.close()
     })
+    .catch(console.log)
 }
 
 function addCard(data, popup) {
@@ -185,10 +184,11 @@ function addCard(data, popup) {
       const cardItem = createCard(res._id, res.name, res.link, res.likes, true);
       cardsSection.addItem(cardItem)
     })
-    .catch(console.log)
-    .finally(() => {
+    .then(res => {
       popup.close()
     })
+    .catch(console.log)
+
 }
 
 function handleSubmitFormDeleteCard(card, cardId, popup) {
@@ -196,8 +196,8 @@ function handleSubmitFormDeleteCard(card, cardId, popup) {
     .then(res => {
       card.deleteElement()
     })
-    .catch(console.log)
-    .finally(() => {
+    .then(res => {
       popup.close()
     })
+    .catch(console.log)
 }

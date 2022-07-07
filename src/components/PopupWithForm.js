@@ -5,10 +5,10 @@ export default class PopupWithForm extends Popup {
   constructor(popupSelector, submitCallback) {
     super(popupSelector);
     this._form = this._popup.querySelector(".popup__form")
-    // this._button = this._form.find(':submit')
     this._button = this._form.querySelector('button[type="submit"]')
     this._submitCallback = submitCallback
     this._inputs = Array.from(this._form.querySelectorAll('.popup__input'))
+    this._popupButtonTextDefault = this._button.textContent
   }
 
   setSubmitCallback(submitCallback) {
@@ -20,7 +20,7 @@ export default class PopupWithForm extends Popup {
   }
 
   open() {
-    this._button.textContent = "сохранить"
+    this._button.textContent = this._popupButtonTextDefault
     super.open();
   }
 
@@ -44,7 +44,6 @@ export default class PopupWithForm extends Popup {
       evt.preventDefault();
       this._button.textContent = "сохранение ..."
       this._submitCallback(this._getInputValues(), this)
-      // this.close()
     })
   }
 }
